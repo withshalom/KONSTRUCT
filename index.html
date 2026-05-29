@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<!--
+  KERFsuite™ — Kernel-Aided Design Suite
+  Copyright (C) 2024-2025 KERFsuite / withshalom
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+  SPDX-License-Identifier: AGPL-3.0-or-later
+  Commercial use requires a separate license — see KERFsuite for details: https://withshalom.github.io
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>.KONSTRUCT · Kernel-Operated Navigation Site Terrain Renovation Unified Construction Technology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* ── KONSTRUCT: architectural blueprint ──────────────────── */
+  --void:    #0c1824;   /* Prussian navy — technical drawing dark */
+  --panel:   #101c2e;
+  --panel2:  #162438;
+  --hover:   #1e3048;
+  --border:  rgba(74,143,212,0.20);
+  --bhi:     rgba(74,143,212,0.42);
+  --acc:     #4a8fd4;   /* blueprint technical blue */
+  --acc-dim: rgba(74,143,212,0.20);
+  --t1: #d0e8f8;  /* cool blue-white text on dark panels */
+  --t2: #7aA8c8;
+  --t3: #3a6080;
+  --fd: 'Syne',sans-serif; --fm: 'Fira Code',monospace;
+  --grid:    rgba(74,143,212,0.10);
+  --gridMaj: rgba(74,143,212,0.22);
+  --axis:    rgba(74,143,212,0.38);
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; overflow:hidden; background:var(--void); color:var(--t1); font-family:var(--fm); }
+
+#app {
+  display:grid; height:100vh;
+  grid-template-rows:44px 1fr 26px;
+  grid-template-columns:180px 1fr 210px;
+  grid-template-areas:"top top top" "side cv right" "stat stat stat";
+}
+
+/* ── Topbar ─────────────────────────────────────────────────────────── */
+#topbar {
+  grid-area:top; background:var(--panel2);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:0; padding:0 10px;
+}
+.brand { display:flex; align-items:center; gap:8px; padding-right:12px; }
+.brand-mark {
+  width:30px; height:30px; border-radius:5px; display:flex;
+  align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#0c1824,#1e4a80,#4a8fd4);
+  font-family:var(--fd); font-weight:800; font-size:12px; color:#fff;
+  letter-spacing:-0.03em;
+}
+.brand-name { font-family:var(--fd); font-weight:700; font-size:14px; color:var(--acc); letter-spacing:0.04em; }
+.brand-sub  { font-size:8px; color:var(--t3); letter-spacing:0.10em; text-transform:uppercase; margin-top:1px; }
+.tb-sep { width:1px; background:var(--border); height:28px; margin:0 8px; flex-shrink:0; }
+.tbb {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:2px; padding:4px 8px; background:none; border:1px solid transparent;
+  border-radius:4px; color:var(--t2); cursor:pointer; font-size:9px;
+  font-family:var(--fm); letter-spacing:0.06em; transition:all 0.15s; white-space:nowrap;
+}
+.tbb svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.5; }
+.tbb:hover { background:var(--hover); border-color:var(--border); color:var(--t1); }
+.tbb.active { background:var(--acc-dim); border-color:var(--acc); color:var(--acc); }
+#tb-wall-types { display:flex; align-items:center; gap:4px; margin-left:8px; flex-wrap:nowrap; overflow:hidden; }
+.wt-pill {
+  padding:4px 9px; border-radius:12px; font-size:9px; font-family:var(--fm);
+  letter-spacing:0.06em; cursor:pointer; border:1px solid var(--border);
+  background:var(--panel); color:var(--t2); transition:all 0.15s; white-space:nowrap;
+}
+.wt-pill:hover { border-color:var(--bhi); color:var(--t1); }
+.wt-pill.active { border-color:var(--acc); background:var(--acc-dim); color:var(--acc); }
+
+/* ── Sidebar ─────────────────────────────────────────────────────────── */
+#sidebar {
+  grid-area:side; background:var(--panel); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; overflow-y:auto; overflow-x:hidden;
+}
+.sh { padding:8px 12px 5px; font-size:9px; color:var(--t3); letter-spacing:0.14em;
+      text-transform:uppercase; border-bottom:1px solid var(--border); flex-shrink:0; }
+.tool-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; padding:6px; flex-shrink:0; }
+.tool-btn {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px; padding:10px 4px; background:var(--panel2); border:1px solid var(--border);
+  border-radius:4px; color:var(--t2); cursor:pointer; font-size:8px; font-family:var(--fm);
+  letter-spacing:0.08em; text-transform:uppercase; transition:all 0.15s; user-select:none;
+}
+.tool-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.5; }
+.tool-btn:hover { background:var(--hover); border-color:var(--bhi); color:var(--t1); }
+.tool-btn.active { background:var(--acc-dim); border-color:var(--acc); color:var(--acc); }
+.tool-btn.del-btn { grid-column:1/-1; color:#ff5566; border-color:rgba(255,85,102,0.2); }
+.tool-btn.del-btn:hover { background:rgba(255,85,102,0.08); border-color:#ff5566; }
+.mat-list { padding:6px; display:flex; flex-direction:column; gap:3px; flex-shrink:0; }
+.mat-btn {
+  display:flex; align-items:center; gap:8px; padding:6px 8px;
+  background:var(--panel2); border:1px solid var(--border); border-radius:4px;
+  color:var(--t2); cursor:pointer; font-size:10px; font-family:var(--fm);
+  transition:all 0.15s; user-select:none;
+}
+.mat-btn:hover { background:var(--hover); border-color:var(--bhi); color:var(--t1); }
+.mat-btn.active { border-color:var(--acc); background:var(--acc-dim); color:var(--t1); }
+.mat-swatch { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+.mat-thick { margin-left:auto; font-size:9px; color:var(--t3); }
+.op-sect { padding:6px; display:flex; flex-direction:column; gap:3px; }
+.op-btn {
+  display:flex; align-items:center; gap:8px; padding:6px 10px;
+  background:var(--panel2); border:1px solid var(--border); border-radius:4px;
+  color:var(--t2); font-size:10px; font-family:var(--fm); cursor:pointer;
+  transition:all 0.15s; letter-spacing:0.04em; width:100%;
+}
+.op-btn:hover { background:var(--hover); border-color:var(--bhi); color:var(--t1); }
+.op-btn svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:1.5; flex-shrink:0; }
+.sidebar-spacer { flex:1; }
+input[type="file"] { display:none; }
+
+/* ── Canvas wrap ─────────────────────────────────────────────────────── */
+#canvas-wrap { grid-area:cv; position:relative; overflow:hidden; background:var(--void); cursor:crosshair; }
+#main-canvas { display:block; position:absolute; top:0; left:0; }
+
+/* Snap ring */
+.snap-ring {
+  position:absolute; pointer-events:none; width:12px; height:12px;
+  border:1.5px solid var(--acc); border-radius:50%;
+  transform:translate(-50%,-50%); display:none;
+  box-shadow:0 0 0 1px rgba(122,154,184,0.2);
+}
+
+/* Coord overlay */
+#coord-overlay {
+  position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+  background:rgba(13,20,34,0.82); border:1px solid var(--border);
+  border-radius:4px; padding:3px 10px;
+  font-family:var(--fm); font-size:10px; color:var(--t2);
+  pointer-events:none; letter-spacing:0.06em; white-space:nowrap;
+}
+#coord-overlay span { color:var(--acc); }
+
+/* Angle lock badge */
+#angle-badge {
+  position:absolute; top:10px; left:50%; transform:translateX(-50%);
+  background:rgba(122,154,184,0.18); border:1px solid var(--acc);
+  border-radius:3px; padding:2px 8px;
+  font-family:var(--fm); font-size:9px; color:var(--acc);
+  pointer-events:none; display:none; letter-spacing:0.08em;
+}
+
+/* ── Right panel ─────────────────────────────────────────────────────── */
+#right-panel {
+  grid-area:right; background:var(--panel); border-left:1px solid var(--border);
+  display:flex; flex-direction:column; overflow-y:auto;
+}
+.prop-row { display:flex; align-items:center; justify-content:space-between;
+             padding:6px 12px; border-bottom:1px solid var(--border); font-size:10px; }
+.prop-label { color:var(--t3); letter-spacing:0.08em; text-transform:uppercase; font-size:9px; }
+.prop-val   { color:var(--t1); }
+.prop-input {
+  background:var(--panel2); border:1px solid var(--border); border-radius:3px;
+  color:var(--t1); font-family:var(--fm); font-size:10px; padding:2px 6px;
+  width:80px; text-align:right;
+}
+.prop-input:focus { outline:none; border-color:var(--acc); }
+#right-empty { flex:1; display:flex; align-items:center; justify-content:center;
+                color:var(--t3); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; }
+.prop-del {
+  margin:8px 10px; padding:6px; background:rgba(255,85,102,0.08);
+  border:1px solid rgba(255,85,102,0.25); border-radius:4px;
+  color:#ff5566; font-family:var(--fm); font-size:10px; cursor:pointer;
+  transition:all 0.15s;
+}
+.prop-del:hover { background:rgba(255,85,102,0.16); }
+
+/* ── Status bar ─────────────────────────────────────────────────────── */
+#statusbar {
+  grid-area:stat; background:var(--panel2); border-top:1px solid var(--border);
+  display:flex; align-items:center; padding:0 12px; gap:0;
+  font-family:var(--fm); font-size:9.5px; color:var(--t2);
+}
+.sb-item { padding:0 10px; border-right:1px solid var(--border); letter-spacing:0.06em; }
+.sb-item:last-child { border-right:none; }
+.sb-item span { color:var(--acc); }
+#sb-tip { margin-left:auto; color:var(--t3); font-size:9px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <div class="brand">
+      <div class="brand-mark">KON</div>
+      <div class="brand-col">
+        <div class="brand-name">.KONSTRUCT</div>
+        <div class="brand-sub">Kernel-Operated Navigation Site Terrain Renovation Unified Construction Technology</div>
+      </div>
+    </div>
+    <div class="tb-sep"></div>
+    <button class="tbb" onclick="newDoc()" title="New">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>New
+    </button>
+    <button class="tbb" onclick="saveDoc()" title="Save .kon (Ctrl+S)">
+      <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save
+    </button>
+    <button class="tbb" onclick="document.getElementById('load-input').click()" title="Open .kon">
+      <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Open
+    </button>
+    <input type="file" id="load-input" accept=".kon,.json" onchange="loadDoc(event)">
+    <div class="tb-sep"></div>
+    <div style="font-size:9px;color:var(--t3);letter-spacing:0.08em;margin-right:6px;">WALL TYPE</div>
+    <div id="tb-wall-types">
+      <button class="wt-pill active" data-wt="ext-brick" onclick="setWallType('ext-brick')">Ext Brick 325</button>
+      <button class="wt-pill" data-wt="int-block"  onclick="setWallType('int-block')">Int Block 100</button>
+      <button class="wt-pill" data-wt="partition"  onclick="setWallType('partition')">Partition 90</button>
+      <button class="wt-pill" data-wt="concrete"   onclick="setWallType('concrete')">Concrete 200</button>
+      <button class="wt-pill" data-wt="curtain"    onclick="setWallType('curtain')">Curtain 50</button>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sh">Tools</div>
+    <div class="tool-grid">
+      <button class="tool-btn" id="tool-select" onclick="setTool('select')" title="Select (V)">
+        <svg viewBox="0 0 24 24"><path d="M5 3l14 9-7 1-4 7z"/></svg>SELECT
+      </button>
+      <button class="tool-btn active" id="tool-wall" onclick="setTool('wall')" title="Wall (W)">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="1"/><line x1="7" y1="7" x2="7" y2="17"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="17" y1="7" x2="17" y2="17"/></svg>WALL
+      </button>
+      <button class="tool-btn del-btn" id="tool-del" onclick="deleteSelected()" title="Delete selected (Del)">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>DELETE
+      </button>
+    </div>
+    <div class="sh">Wall Types</div>
+    <div class="mat-list" id="wall-type-list"></div>
+    <div class="sh">Export</div>
+    <div class="op-sect">
+      <button class="op-btn" onclick="exportSVG()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>Export SVG
+      </button>
+      <button class="op-btn" onclick="exportDXF()">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>Export DXF
+      </button>
+    </div>
+    <div class="sidebar-spacer"></div>
+  </div>
+
+  <!-- CANVAS -->
+  <div id="canvas-wrap">
+    <canvas id="main-canvas"></canvas>
+    <div class="snap-ring" id="snap-ring"></div>
+    <div id="coord-overlay"><span id="cx">0</span> mm &nbsp; <span id="cy">0</span> mm</div>
+    <div id="angle-badge" id="ang-badge">∠0°</div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="right-panel">
+    <div id="right-empty">SELECT A WALL</div>
+    <div id="right-props" style="display:none">
+      <div class="sh">Wall Properties</div>
+      <div class="prop-row"><span class="prop-label">Type</span><span class="prop-val" id="p-type">—</span></div>
+      <div class="prop-row"><span class="prop-label">Thickness</span><span class="prop-val"><input class="prop-input" id="p-thick" type="number" min="30" max="1000" step="5" onchange="updateThickness(this.value)"> mm</span></div>
+      <div class="prop-row"><span class="prop-label">Height</span><span class="prop-val"><input class="prop-input" id="p-height" type="number" min="1.5" max="12" step="0.1" onchange="updateHeight(this.value)"> m</span></div>
+      <div class="prop-row"><span class="prop-label">Material</span><span class="prop-val" id="p-mat">—</span></div>
+      <div class="prop-row"><span class="prop-label">Length</span><span class="prop-val" id="p-len">—</span></div>
+      <button class="prop-del" onclick="deleteSelected()">Delete Wall</button>
+    </div>
+  </div>
+
+  <!-- STATUSBAR -->
+  <div id="statusbar">
+    <div class="sb-item">MODE <span id="sb-mode">WALL</span></div>
+    <div class="sb-item">SNAP <span id="sb-snap">ON</span></div>
+    <div class="sb-item">GRID <span id="sb-grid">100mm</span></div>
+    <div class="sb-item">WALLS <span id="sb-count">0</span></div>
+    <div id="sb-tip">W wall · V select · Shift lock 15° · Esc cancel · S snap · G grid</div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ════════════════════════════════════════════════════════════════════════
+//  .KONSTRUCT v0.1 — Wall Tool (Phase 1)
+//  Borrows: camera, grid, snap ring, onWheel, mouse pattern from KAD
+//  New: wall data model, wall join algorithm, wall rendering + hatch
+// ════════════════════════════════════════════════════════════════════════
+
+// ── Color palette ────────────────────────────────────────────────────────
+const C = {
+  bg:      '#060810',
+  grid:    'rgba(130,160,190,0.07)',
+  gridMaj: 'rgba(130,160,190,0.16)',
+  axis:    'rgba(130,160,190,0.28)',
+  acc:     '#7a9ab8',
+  rubber:  'rgba(122,154,184,0.75)',
+  sel:     'rgba(122,154,184,0.25)',
+};
+
+// ── Materials ─────────────────────────────────────────────────────────────
+const MATERIALS = {
+  'brick-ext': { label:'Ext Brick',   fill:'rgba(200,155,100,0.30)', line:'#8a5030', hatch:'cross',   swatch:'#c89b64' },
+  'block-int': { label:'Int Block',   fill:'rgba(160,165,170,0.30)', line:'#505560', hatch:'dots',    swatch:'#a0a5aa' },
+  'timber':    { label:'Timber',      fill:'rgba(210,165,105,0.30)', line:'#705030', hatch:'horiz',   swatch:'#d2a569' },
+  'gypsum':    { label:'Gypsum',      fill:'rgba(220,216,210,0.28)', line:'#808890', hatch:'none',    swatch:'#dcd8d2' },
+  'concrete':  { label:'Concrete',    fill:'rgba(185,180,175,0.30)', line:'#505050', hatch:'stipple', swatch:'#b9b4af' },
+  'glass':     { label:'Glazing',     fill:'rgba(150,195,225,0.20)', line:'#4090c0', hatch:'none',    swatch:'#96c3e1' },
+};
+
+// ── Wall types ────────────────────────────────────────────────────────────
+const WALL_TYPES = {
+  'ext-brick': { label:'Ext Brick 325', thickness:0.325, material:'brick-ext',  height:3.0 },
+  'int-block':  { label:'Int Block 100',  thickness:0.100, material:'block-int',  height:3.0 },
+  'partition':  { label:'Partition 90',   thickness:0.090, material:'gypsum',     height:3.0 },
+  'concrete':   { label:'Concrete 200',   thickness:0.200, material:'concrete',   height:3.0 },
+  'curtain':    { label:'Curtain 50',     thickness:0.050, material:'glass',      height:3.0 },
+};
+
+// ── Scene ──────────────────────────────────────────────────────────────────
+const Scene = {
+  nextId: 1,
+  walls:  [],
+  add(w)    { w.id = this.nextId++; this.walls.push(w); return w; },
+  remove(id){ this.walls = this.walls.filter(w => w.id !== id); },
+  byId(id)  { return this.walls.find(w => w.id === id); },
+  clear()   { this.walls = []; this.nextId = 1; },
+};
+
+// ── Camera (verbatim from KAD, adapted) ────────────────────────────────────
+const cam = { panX:0, panY:0, zoom:80, minZoom:5, maxZoom:2000 };
+function worldToScreen(wx,wy) { return { x: wx*cam.zoom+cam.panX, y: -wy*cam.zoom+cam.panY }; }
+function screenToWorld(sx,sy) { return { x:(sx-cam.panX)/cam.zoom, y:-(sy-cam.panY)/cam.zoom }; }
+
+// ── Canvas setup ────────────────────────────────────────────────────────────
+const canvas = document.getElementById('main-canvas');
+const ctx    = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const wrap = document.getElementById('canvas-wrap');
+  canvas.width  = wrap.clientWidth;
+  canvas.height = wrap.clientHeight;
+  if (cam.panX === 0 && cam.panY === 0) {
+    cam.panX = canvas.width  / 2;
+    cam.panY = canvas.height / 2;
+  }
+  render();
+}
+
+// ── Grid (adapted from KAD) ─────────────────────────────────────────────────
+let showGrid = true;
+const GRID_STEPS = [0.01,0.05,0.1,0.5,1.0,5.0,10.0,50.0,100.0];
+function getGridSpacing() {
+  for (const s of GRID_STEPS) { if (s * cam.zoom >= 20) return s; }
+  return 100;
+}
+function drawGrid(W,H) {
+  if (!showGrid) return;
+  const sp=getGridSpacing(), major=10;
+  const tl=screenToWorld(0,0), br=screenToWorld(W,H);
+  const x0=Math.floor(tl.x/sp)*sp, x1=Math.ceil(br.x/sp)*sp;
+  const y0=Math.floor(br.y/sp)*sp, y1=Math.ceil(tl.y/sp)*sp;
+
+  ctx.lineWidth=1;
+  ctx.strokeStyle=C.grid; ctx.beginPath();
+  for(let x=x0;x<=x1;x+=sp){ if(Math.round(x/sp)%major!==0){ const sx=worldToScreen(x,0).x; ctx.moveTo(sx,0);ctx.lineTo(sx,H); } }
+  for(let y=y0;y<=y1;y+=sp){ if(Math.round(y/sp)%major!==0){ const sy=worldToScreen(0,y).y; ctx.moveTo(0,sy);ctx.lineTo(W,sy); } }
+  ctx.stroke();
+
+  ctx.strokeStyle=C.gridMaj; ctx.beginPath();
+  for(let x=x0;x<=x1;x+=sp){ if(Math.round(x/sp)%major===0){ const sx=worldToScreen(x,0).x; ctx.moveTo(sx,0);ctx.lineTo(sx,H); } }
+  for(let y=y0;y<=y1;y+=sp){ if(Math.round(y/sp)%major===0){ const sy=worldToScreen(0,y).y; ctx.moveTo(0,sy);ctx.lineTo(W,sy); } }
+  ctx.stroke();
+
+  ctx.strokeStyle=C.axis; ctx.lineWidth=1.2; ctx.beginPath();
+  const ox=worldToScreen(0,0).x, oy=worldToScreen(0,0).y;
+  ctx.moveTo(ox,0);ctx.lineTo(ox,H);ctx.moveTo(0,oy);ctx.lineTo(W,oy); ctx.stroke();
+}
+
+// ── Snap ───────────────────────────────────────────────────────────────────
+let snapEnabled = true;
+let snapActive  = false;
+let snapPoint   = null;
+const SNAP_PX   = 14;
+let   GRID      = 0.1;  // metres
+
+function findSnap(wx,wy) {
+  // 1. Wall endpoints take priority
+  const testS = worldToScreen(wx,wy);
+  for (const wall of Scene.walls) {
+    for (const [ex,ey] of [[wall.x1,wall.y1],[wall.x2,wall.y2]]) {
+      const sp = worldToScreen(ex,ey);
+      if (Math.hypot(sp.x-testS.x, sp.y-testS.y) < SNAP_PX) return {x:ex, y:ey};
+    }
+  }
+  // 2. Grid snap
+  return { x:Math.round(wx/GRID)*GRID, y:Math.round(wy/GRID)*GRID };
+}
+
+// ── Wall geometry (THE HARD PART) ──────────────────────────────────────────
+
+// Raw (unjoined) corners of a wall rectangle
+function rawCorners(wall) {
+  const dx=wall.x2-wall.x1, dy=wall.y2-wall.y1;
+  const len=Math.hypot(dx,dy);
+  if (len<0.001) return null;
+  const nx=dx/len, ny=dy/len;    // unit direction along wall
+  const h=wall.thickness/2;
+  const px=-ny*h, py=nx*h;       // left-perpendicular offset
+  return {
+    SL:{x:wall.x1+px, y:wall.y1+py},   // start-left
+    SR:{x:wall.x1-px, y:wall.y1-py},   // start-right
+    EL:{x:wall.x2+px, y:wall.y2+py},   // end-left
+    ER:{x:wall.x2-px, y:wall.y2-py},   // end-right
+    dir:{x:nx,y:ny}, perp:{x:-ny,y:nx}, h
+  };
+}
+
+// Line-line intersection: lines through p1 (dir d1) and p2 (dir d2)
+function lineIntersect(p1,d1,p2,d2) {
+  const cross = d1.x*d2.y - d1.y*d2.x;
+  if (Math.abs(cross) < 1e-9) return null; // parallel
+  const ex=p2.x-p1.x, ey=p2.y-p1.y;
+  const t=(ex*d2.y - ey*d2.x)/cross;
+  return { x:p1.x+t*d1.x, y:p1.y+t*d1.y };
+}
+
+// Find other walls whose endpoints connect to point P
+const JOIN_TOL = 0.06; // 60mm join tolerance
+function findConnectedAt(wall, P) {
+  const result=[];
+  for (const other of Scene.walls) {
+    if (other.id===wall.id) continue;
+    const d1=Math.hypot(other.x1-P.x, other.y1-P.y);
+    const d2=Math.hypot(other.x2-P.x, other.y2-P.y);
+    if (d1<JOIN_TOL) result.push({wall:other, otherEnd:'start'});
+    else if (d2<JOIN_TOL) result.push({wall:other, otherEnd:'end'});
+  }
+  return result;
+}
+
+// Compute the miter join corner for wallA at one of its endpoints
+// Returns {left, right} adjusted corner points (world space)
+function computeMiter(wallA, isEnd, conn) {
+  const rA=rawCorners(wallA);
+  const rB=rawCorners(conn.wall);
+  if (!rA||!rB) return null;
+
+  const P = isEnd ? {x:wallA.x2,y:wallA.y2} : {x:wallA.x1,y:wallA.y1};
+
+  // Points on A's edge lines at junction P (A's perp already scaled by h)
+  const AL={x:P.x+rA.perp.x, y:P.y+rA.perp.y}; // left edge base point
+  const AR={x:P.x-rA.perp.x, y:P.y-rA.perp.y}; // right edge base point
+
+  // Points on B's edge lines at P
+  const BL={x:P.x+rB.perp.x, y:P.y+rB.perp.y};
+  const BR={x:P.x-rB.perp.x, y:P.y-rB.perp.y};
+
+  // Miter: intersect A_left line with B_left line, A_right with B_right
+  // Both lines run in their wall's own direction
+  const MITER_MAX = Math.max(wallA.thickness, conn.wall.thickness) * 8;
+  let left  = lineIntersect(AL, rA.dir, BL, rB.dir);
+  let right = lineIntersect(AR, rA.dir, BR, rB.dir);
+
+  // Miter limit: if intersection is very far, fall back to raw corner
+  if (!left  || Math.hypot(left.x -P.x, left.y -P.y)>MITER_MAX) left  = AL;
+  if (!right || Math.hypot(right.x-P.x, right.y-P.y)>MITER_MAX) right = AR;
+
+  return {left, right};
+}
+
+// Get the final (join-adjusted) corners for a wall
+function getWallCorners(wall) {
+  const c=rawCorners(wall);
+  if (!c) return null;
+
+  const SP={x:wall.x1,y:wall.y1};
+  const EP={x:wall.x2,y:wall.y2};
+
+  const startConns=findConnectedAt(wall,SP);
+  const endConns  =findConnectedAt(wall,EP);
+
+  if (startConns.length>0) {
+    const m=computeMiter(wall,false,startConns[0]);
+    if (m) { c.SL=m.left; c.SR=m.right; }
+  }
+  if (endConns.length>0) {
+    const m=computeMiter(wall,true,endConns[0]);
+    if (m) { c.EL=m.left; c.ER=m.right; }
+  }
+  return c;
+}
+
+// ── Hatch patterns ─────────────────────────────────────────────────────────
+function drawHatch(type, color) {
+  if (type==='none') return;
+  const W=canvas.width, H=canvas.height;
+  const step=Math.max(5, cam.zoom*0.09);
+  ctx.save();
+  ctx.globalAlpha=0.30;
+  if (type==='cross') {
+    ctx.strokeStyle=color; ctx.lineWidth=0.5; ctx.beginPath();
+    for (let d=-H;d<W+H;d+=step) {
+      ctx.moveTo(d,0);ctx.lineTo(d+H,H);
+      ctx.moveTo(d,H);ctx.lineTo(d+H,0);
+    }
+    ctx.stroke();
+  } else if (type==='horiz') {
+    ctx.strokeStyle=color; ctx.lineWidth=0.5; ctx.beginPath();
+    for (let y=0;y<H;y+=step) { ctx.moveTo(0,y);ctx.lineTo(W,y); }
+    ctx.stroke();
+  } else if (type==='dots') {
+    ctx.fillStyle=color;
+    for (let y=step*0.5;y<H;y+=step)
+      for (let x=step*0.5;x<W;x+=step) {
+        ctx.beginPath();ctx.arc(x,y,1,0,Math.PI*2);ctx.fill();
+      }
+  } else if (type==='stipple') {
+    ctx.fillStyle=color;
+    let rng=0x12345678;
+    const rand=()=>{rng=((rng*1664525)+1013904223)&0xffffffff; return (rng>>>0)/0xffffffff;};
+    for (let y=0;y<H;y+=step*1.4)
+      for (let x=0;x<W;x+=step*1.4) {
+        const rx=x+(rand()-0.5)*step*0.9;
+        const ry=y+(rand()-0.5)*step*0.9;
+        const r=rand()*1.2+0.4;
+        ctx.beginPath();ctx.arc(rx,ry,r,0,Math.PI*2);ctx.fill();
+      }
+  }
+  ctx.restore();
+}
+
+// ── Wall renderer ───────────────────────────────────────────────────────────
+function ws(p) { return worldToScreen(p.x,p.y); }
+
+function drawWall(wall, selected) {
+  const c=getWallCorners(wall);
+  if (!c) return;
+  const mat=MATERIALS[wall.material]||MATERIALS['gypsum'];
+
+  const sl=ws(c.SL),sr=ws(c.SR),el=ws(c.EL),er=ws(c.ER);
+
+  // — Fill + hatch (clipped to wall polygon) —
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(sl.x,sl.y); ctx.lineTo(el.x,el.y);
+  ctx.lineTo(er.x,er.y); ctx.lineTo(sr.x,sr.y);
+  ctx.closePath();
+  ctx.clip();
+  ctx.fillStyle = selected ? 'rgba(122,154,184,0.18)' : mat.fill;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  drawHatch(mat.hatch, mat.line);
+  ctx.restore();
+
+  // — Face lines —
+  const lc = selected ? '#9ab8d0' : mat.line;
+  const lw = selected ? (2/cam.zoom) : (1.5/cam.zoom);
+  ctx.save();
+  ctx.strokeStyle=lc; ctx.lineWidth=lw; ctx.lineCap='round';
+
+  // Left face
+  ctx.beginPath(); ctx.moveTo(sl.x,sl.y); ctx.lineTo(el.x,el.y); ctx.stroke();
+  // Right face
+  ctx.beginPath(); ctx.moveTo(sr.x,sr.y); ctx.lineTo(er.x,er.y); ctx.stroke();
+
+  // End caps — only on free (unjoined) endpoints
+  const SP={x:wall.x1,y:wall.y1}, EP={x:wall.x2,y:wall.y2};
+  if (findConnectedAt(wall,SP).length===0) {
+    ctx.beginPath(); ctx.moveTo(sl.x,sl.y); ctx.lineTo(sr.x,sr.y); ctx.stroke();
+  }
+  if (findConnectedAt(wall,EP).length===0) {
+    ctx.beginPath(); ctx.moveTo(el.x,el.y); ctx.lineTo(er.x,er.y); ctx.stroke();
+  }
+
+  // Centreline dot at endpoints (helps snap targeting)
+  if (selected) {
+    ctx.fillStyle=C.acc;
+    for (const p of [wall.x1,wall.y1,wall.x2,wall.y2].reduce((a,_,i,arr)=>i%2?a:a.concat([[arr[i],arr[i+1]]]),[]).map(([x,y])=>worldToScreen(x,y))) {
+      ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2); ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function drawRubberBandWall() {
+  if (activeTool!=='wall' || !wallState.active) return;
+  const sx=wallState.x1, sy=wallState.y1;
+  const ex=mouseWorld.x, ey=mouseWorld.y;
+  const dx=ex-sx, dy=ey-sy;
+  const len=Math.hypot(dx,dy);
+  if (len<0.001) return;
+
+  const wt=WALL_TYPES[activeWallType];
+  const previewWall={x1:sx,y1:sy,x2:ex,y2:ey,thickness:wt.thickness,material:wt.material,id:-1};
+  const c=rawCorners(previewWall); // raw (no joins for preview)
+  if (!c) return;
+
+  const sl=ws(c.SL),sr=ws(c.SR),el=ws(c.EL),er=ws(c.ER);
+  const mat=MATERIALS[wt.material];
+
+  ctx.save();
+  ctx.globalAlpha=0.55;
+  ctx.beginPath();
+  ctx.moveTo(sl.x,sl.y);ctx.lineTo(el.x,el.y);ctx.lineTo(er.x,er.y);ctx.lineTo(sr.x,sr.y);
+  ctx.closePath();
+  ctx.fillStyle=mat.fill; ctx.fill();
+  ctx.strokeStyle=mat.line; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Length annotation
+  const midS=worldToScreen((sx+ex)/2,(sy+ey)/2);
+  const lenMm=Math.round(len*1000);
+  ctx.fillStyle=C.acc; ctx.font='10px Fira Code,monospace'; ctx.textAlign='center';
+  ctx.globalAlpha=0.9;
+  ctx.fillText(lenMm+'mm', midS.x, midS.y-10);
+  ctx.restore();
+}
+
+// ── Main render ─────────────────────────────────────────────────────────────
+function render() {
+  const W=canvas.width, H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle=C.bg; ctx.fillRect(0,0,W,H);
+  drawGrid(W,H);
+
+  for (const wall of Scene.walls) {
+    drawWall(wall, selectedId===wall.id);
+  }
+  drawRubberBandWall();
+}
+
+// ── Tools + state ────────────────────────────────────────────────────────────
+let activeTool     = 'wall';
+let activeWallType = 'ext-brick';
+let selectedId     = null;
+let mouseWorld     = {x:0,y:0};
+let mouseScreen    = {x:0,y:0};
+let isPanning      = false;
+let panOX=0, panOY=0, camStart={x:0,y:0};
+let wallState      = {active:false, x1:0, y1:0};
+let shiftLockActive= false;
+let shiftLockAngle = 0;
+
+function setTool(t) {
+  activeTool=t;
+  if (t!=='wall') { wallState.active=false; }
+  if (t!=='select') { selectedId=null; updateRightPanel(); }
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('tool-'+t);
+  if (btn) btn.classList.add('active');
+  canvas.style.cursor = t==='wall'?'crosshair':'default';
+  document.getElementById('sb-mode').textContent=t.toUpperCase();
+  render();
+}
+
+function setWallType(wt) {
+  activeWallType=wt;
+  document.querySelectorAll('.wt-pill').forEach(b=>{
+    b.classList.toggle('active', b.dataset.wt===wt);
+  });
+}
+
+// ── Hit testing ─────────────────────────────────────────────────────────────
+function hitTestWall(wx,wy,wall) {
+  const dx=wall.x2-wall.x1, dy=wall.y2-wall.y1;
+  const len=Math.hypot(dx,dy);
+  if (len<0.001) return false;
+  const nx=dx/len, ny=dy/len;
+  const relX=wx-wall.x1, relY=wy-wall.y1;
+  const along=relX*nx+relY*ny;
+  if (along<-0.1 || along>len+0.1) return false;
+  const dist=Math.abs(relX*ny - relY*nx);
+  return dist < wall.thickness/2 + 0.1;
+}
+
+// ── Mouse handlers ───────────────────────────────────────────────────────────
+canvas.addEventListener('mousemove',  onMouseMove);
+canvas.addEventListener('mousedown',  onMouseDown);
+canvas.addEventListener('mouseup',    onMouseUp);
+canvas.addEventListener('wheel',      onWheel, {passive:false});
+canvas.addEventListener('contextmenu',onContextMenu);
+
+function spt(e) {
+  const r=canvas.getBoundingClientRect();
+  return {x:e.clientX-r.left, y:e.clientY-r.top};
+}
+
+function onMouseMove(e) {
+  const s=spt(e);
+  mouseScreen=s;
+  const raw=screenToWorld(s.x,s.y);
+  const snap=findSnap(raw.x,raw.y);
+  snapActive=!!snap; snapPoint=snap;
+  mouseWorld=snapActive?snapPoint:raw;
+
+  // Shift = angle lock 15° (wall tool, while drawing)
+  shiftLockActive=false;
+  if (e.shiftKey && activeTool==='wall' && wallState.active) {
+    const sx=wallState.x1, sy=wallState.y1;
+    const rawAng=Math.atan2(mouseWorld.y-sy, mouseWorld.x-sx);
+    const step=15*Math.PI/180;
+    const locked=Math.round(rawAng/step)*step;
+    const dist=Math.hypot(mouseWorld.x-sx, mouseWorld.y-sy);
+    mouseWorld={x:sx+dist*Math.cos(locked), y:sy+dist*Math.sin(locked)};
+    shiftLockActive=true; shiftLockAngle=locked;
+  }
+
+  // Snap ring
+  const ring=document.getElementById('snap-ring');
+  const sp=worldToScreen(mouseWorld.x,mouseWorld.y);
+  ring.style.display='block';
+  ring.style.left=sp.x+'px'; ring.style.top=sp.y+'px';
+
+  // Coord overlay
+  document.getElementById('cx').textContent=Math.round(mouseWorld.x*1000);
+  document.getElementById('cy').textContent=Math.round(mouseWorld.y*1000);
+
+  // Angle badge
+  const badge=document.getElementById('angle-badge');
+  if (shiftLockActive) {
+    const deg=((Math.round(shiftLockAngle*180/Math.PI)%360)+360)%360;
+    badge.textContent='∠'+deg+'°  locked';
+    badge.style.display='block';
+  } else {
+    badge.style.display='none';
+  }
+
+  if (isPanning) {
+    cam.panX=camStart.x+(s.x-panOX);
+    cam.panY=camStart.y+(s.y-panOY);
+  }
+
+  render();
+}
+
+function onMouseDown(e) {
+  if (e.button===1||(e.button===0&&e.altKey)) {
+    isPanning=true; panOX=e.clientX-canvas.getBoundingClientRect().left;
+    panOY=e.clientY-canvas.getBoundingClientRect().top;
+    camStart={x:cam.panX,y:cam.panY}; canvas.style.cursor='grabbing'; return;
+  }
+  if (e.button!==0) return;
+  e.preventDefault();
+  const wp=mouseWorld; // already snapped + shift-locked
+
+  if (activeTool==='wall') {
+    if (!wallState.active) {
+      // Start new wall
+      wallState={active:true, x1:wp.x, y1:wp.y};
+    } else {
+      // Commit wall, chain continues from endpoint
+      const wt=WALL_TYPES[activeWallType];
+      if (Math.hypot(wp.x-wallState.x1, wp.y-wallState.y1) > 0.01) {
+        Scene.add({
+          type:'wall', x1:wallState.x1,y1:wallState.y1,
+          x2:wp.x,y2:wp.y,
+          thickness:wt.thickness, material:wt.material, height:wt.height
+        });
+        document.getElementById('sb-count').textContent=Scene.walls.length;
+      }
+      wallState={active:true, x1:wp.x, y1:wp.y}; // chain
+    }
+  }
+
+  if (activeTool==='select') {
+    let hit=null;
+    for (const wall of [...Scene.walls].reverse()) {
+      if (hitTestWall(wp.x,wp.y,wall)) { hit=wall; break; }
+    }
+    selectedId=hit?hit.id:null;
+    updateRightPanel();
+  }
+
+  render();
+}
+
+function onMouseUp(e) {
+  if (isPanning) {
+    isPanning=false;
+    canvas.style.cursor=activeTool==='wall'?'crosshair':'default';
+  }
+}
+
+function onWheel(e) {
+  e.preventDefault();
+  const f=e.deltaY<0?1.12:1/1.12;
+  const s=spt(e);
+  const nz=Math.max(cam.minZoom,Math.min(cam.maxZoom,cam.zoom*f));
+  cam.panX=s.x-(s.x-cam.panX)*(nz/cam.zoom);
+  cam.panY=s.y-(s.y-cam.panY)*(nz/cam.zoom);
+  cam.zoom=nz;
+  updateGridLabel(); render();
+}
+
+function onContextMenu(e) {
+  e.preventDefault();
+  if (activeTool==='wall' && wallState.active) {
+    wallState.active=false; render();
+  }
+}
+
+// ── Keyboard ─────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e=>{
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  switch(e.key) {
+    case 'w': case 'W': setTool('wall');   break;
+    case 'v': case 'V': setTool('select'); break;
+    case 'Escape':
+      if (wallState.active) { wallState.active=false; render(); }
+      else { selectedId=null; updateRightPanel(); render(); }
+      break;
+    case 'Delete': case 'Backspace': deleteSelected(); break;
+    case 's': case 'S': if (!e.ctrlKey&&!e.metaKey) { toggleSnap(); } break;
+    case 'g': case 'G': toggleGrid(); break;
+  }
+  if ((e.ctrlKey||e.metaKey)&&e.key==='s') { e.preventDefault(); saveDoc(); }
+});
+
+function toggleSnap() {
+  snapEnabled=!snapEnabled;
+  document.getElementById('sb-snap').textContent=snapEnabled?'ON':'OFF';
+}
+function toggleGrid() {
+  showGrid=!showGrid;
+  render();
+}
+function updateGridLabel() {
+  const sp=getGridSpacing();
+  const mm=sp>=1?sp*1000+'mm':sp*1000+'mm';
+  document.getElementById('sb-grid').textContent=mm;
+}
+
+// ── Right panel ───────────────────────────────────────────────────────────────
+function updateRightPanel() {
+  const empty=document.getElementById('right-empty');
+  const props=document.getElementById('right-props');
+  const wall=selectedId?Scene.byId(selectedId):null;
+  if (!wall) { empty.style.display='flex'; props.style.display='none'; return; }
+  empty.style.display='none'; props.style.display='block';
+  const wt=Object.entries(WALL_TYPES).find(([,v])=>v.thickness===wall.thickness&&v.material===wall.material);
+  document.getElementById('p-type').textContent=wt?wt[1].label:'Custom';
+  document.getElementById('p-thick').value=Math.round(wall.thickness*1000);
+  document.getElementById('p-height').value=wall.height.toFixed(1);
+  document.getElementById('p-mat').textContent=(MATERIALS[wall.material] && MATERIALS[wall.material].label)||wall.material;
+  const len=Math.round(Math.hypot(wall.x2-wall.x1,wall.y2-wall.y1)*1000);
+  document.getElementById('p-len').textContent=len+'mm';
+}
+
+function updateThickness(mm) {
+  const wall=selectedId?Scene.byId(selectedId):null;
+  if (!wall) return;
+  wall.thickness=parseFloat(mm)/1000; render();
+}
+function updateHeight(m) {
+  const wall=selectedId?Scene.byId(selectedId):null;
+  if (!wall) return;
+  wall.height=parseFloat(m); render();
+}
+function deleteSelected() {
+  if (!selectedId) return;
+  Scene.remove(selectedId); selectedId=null;
+  updateRightPanel();
+  document.getElementById('sb-count').textContent=Scene.walls.length;
+  render();
+}
+
+// ── File ops ──────────────────────────────────────────────────────────────────
+function newDoc() {
+  if (Scene.walls.length>0 && !confirm('Clear all walls?')) return;
+  Scene.clear(); selectedId=null; wallState.active=false;
+  updateRightPanel();
+  document.getElementById('sb-count').textContent='0';
+  render();
+}
+
+function saveDoc() {
+  const doc={version:'1.0',source:'KONSTRUCT',walls:Scene.walls,nextId:Scene.nextId};
+  const blob=new Blob([JSON.stringify(doc,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='structure.kon'; a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Saved structure.kon');
+}
+
+function loadDoc(e) {
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try {
+      const d=JSON.parse(ev.target.result);
+      if (d.source!=='KONSTRUCT'||!d.walls) throw 0;
+      Scene.walls=d.walls; Scene.nextId=d.nextId||d.walls.length+1;
+      selectedId=null; wallState.active=false;
+      document.getElementById('sb-count').textContent=Scene.walls.length;
+      updateRightPanel(); render();
+      showToast('Loaded '+f.name);
+    } catch { showToast('Error: not a valid .kon file'); }
+  };
+  r.readAsText(f);
+  e.target.value='';
+}
+
+function exportSVG() {
+  if (!Scene.walls.length) { showToast('No walls to export'); return; }
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  for (const w of Scene.walls) {
+    for (const [x,y] of [[w.x1,w.y1],[w.x2,w.y2]]) {
+      minX=Math.min(minX,x-w.thickness); minY=Math.min(minY,y-w.thickness);
+      maxX=Math.max(maxX,x+w.thickness); maxY=Math.max(maxY,y+w.thickness);
+    }
+  }
+  const PAD=0.5, W=maxX-minX+PAD*2, H=maxY-minY+PAD*2;
+  const tx=v=>(v-minX+PAD), ty=v=>(maxY+PAD-v); // flip Y for SVG
+  const lines=[`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W.toFixed(3)} ${H.toFixed(3)}" width="${(W*100).toFixed(0)}" height="${(H*100).toFixed(0)}">`];
+  lines.push(`<rect width="${W.toFixed(3)}" height="${H.toFixed(3)}" fill="#f5f2ee"/>`);
+  for (const wall of Scene.walls) {
+    const c=rawCorners(wall); if(!c) continue; // use raw for SVG (simple)
+    const pts=[c.SL,c.EL,c.ER,c.SR].map(p=>`${tx(p.x).toFixed(4)},${ty(p.y).toFixed(4)}`).join(' ');
+    const mat=MATERIALS[wall.material]||MATERIALS['gypsum'];
+    const fill=mat.fill.replace(/rgba\([^)]+,/,'rgba(').replace(/0\.\d+\)/,'0.5)');
+    lines.push(`<polygon points="${pts}" fill="${mat.swatch}" fill-opacity="0.4" stroke="${mat.line}" stroke-width="0.02"/>`);
+  }
+  lines.push('</svg>');
+  const blob=new Blob([lines.join('\n')],{type:'image/svg+xml'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='floor-plan.svg'; a.click(); URL.revokeObjectURL(a.href);
+  showToast('Exported floor-plan.svg');
+}
+
+function exportDXF() {
+  if (!Scene.walls.length) { showToast('No walls to export'); return; }
+  const CAT_COLOR={['brick-ext']:30,['block-int']:9,['timber']:33,['gypsum']:7,['concrete']:8,['glass']:4};
+  const lines=[
+    '0','SECTION','2','HEADER',
+    '9','$ACADVER','1','AC1015',
+    '9','$INSUNITS','70','6',
+    '0','ENDSEC','0','SECTION','2','ENTITIES'
+  ];
+  for (const wall of Scene.walls) {
+    const c=getWallCorners(wall); if(!c) continue;
+    const col=CAT_COLOR[wall.material]||7;
+    const lay='A-WALL';
+    // Left face
+    lines.push('0','LINE','8',lay,'62',String(col));
+    lines.push('10',c.SL.x.toFixed(4),'20',c.SL.y.toFixed(4),'30','0');
+    lines.push('11',c.EL.x.toFixed(4),'21',c.EL.y.toFixed(4),'31','0');
+    // Right face
+    lines.push('0','LINE','8',lay,'62',String(col));
+    lines.push('10',c.SR.x.toFixed(4),'20',c.SR.y.toFixed(4),'30','0');
+    lines.push('11',c.ER.x.toFixed(4),'21',c.ER.y.toFixed(4),'31','0');
+    // Caps at free endpoints
+    const SP={x:wall.x1,y:wall.y1},EP={x:wall.x2,y:wall.y2};
+    if (findConnectedAt(wall,SP).length===0) {
+      lines.push('0','LINE','8',lay,'62',String(col));
+      lines.push('10',c.SL.x.toFixed(4),'20',c.SL.y.toFixed(4),'30','0');
+      lines.push('11',c.SR.x.toFixed(4),'21',c.SR.y.toFixed(4),'31','0');
+    }
+    if (findConnectedAt(wall,EP).length===0) {
+      lines.push('0','LINE','8',lay,'62',String(col));
+      lines.push('10',c.EL.x.toFixed(4),'20',c.EL.y.toFixed(4),'30','0');
+      lines.push('11',c.ER.x.toFixed(4),'21',c.ER.y.toFixed(4),'31','0');
+    }
+  }
+  lines.push('0','ENDSEC','0','EOF');
+  const blob=new Blob([lines.join('\n')],{type:'application/dxf'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='floor-plan.dxf'; a.click(); URL.revokeObjectURL(a.href);
+  showToast('Exported floor-plan.dxf');
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let toastTimer=null;
+function showToast(msg) {
+  let t=document.getElementById('konstruct-toast');
+  if (!t) {
+    t=document.createElement('div');
+    t.id='konstruct-toast';
+    Object.assign(t.style,{position:'fixed',bottom:'40px',left:'50%',transform:'translateX(-50%)',
+      background:'rgba(13,20,34,0.92)',border:'1px solid rgba(130,160,190,0.3)',
+      borderRadius:'4px',padding:'6px 14px',fontSize:'11px',fontFamily:'Fira Code,monospace',
+      color:'#d8e4ee',zIndex:'9999',pointerEvents:'none',transition:'opacity 0.3s'});
+    document.body.appendChild(t);
+  }
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.style.opacity='0',2200);
+}
+
+// ── Build sidebar wall-type list ─────────────────────────────────────────────
+function buildWallTypeList() {
+  const list=document.getElementById('wall-type-list');
+  list.innerHTML='';
+  for (const [key,wt] of Object.entries(WALL_TYPES)) {
+    const mat=MATERIALS[wt.material];
+    const btn=document.createElement('button');
+    btn.className='mat-btn'+(key===activeWallType?' active':'');
+    btn.dataset.wt=key;
+    btn.innerHTML=`<div class="mat-swatch" style="background:${mat.swatch}"></div>${mat.label}<span class="mat-thick">${Math.round(wt.thickness*1000)}mm</span>`;
+    btn.onclick=()=>{ setWallType(key); document.querySelectorAll('.mat-btn').forEach(b=>b.classList.toggle('active',b.dataset.wt===key)); };
+    list.appendChild(btn);
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildWallTypeList();
+setTool('wall');
+updateGridLabel();
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+</script>
+</body>
+</html>

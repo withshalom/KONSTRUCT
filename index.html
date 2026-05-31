@@ -198,6 +198,55 @@ input[type="file"] { display:none; }
 .sb-item:last-child { border-right:none; }
 .sb-item span { color:var(--acc); }
 #sb-tip { margin-left:auto; color:var(--t3); font-size:9px; }
+
+/* ── KANVAS paperspace button — always steel teal suite-wide ── */
+.kanvas-btn, .kanvas-btn.kv-btn, .kanvas-btn.op-btn {
+  background: rgba(0,144,168,0.12) !important;
+  border: 1px solid rgba(0,144,168,0.35) !important;
+  color: #0090a8 !important;
+}
+.kanvas-btn:hover { background: rgba(0,144,168,0.24) !important; }
+
+/* ── KANVAS PAPERSPACE TAB ──────────────────────────────── */
+.kv-tab-bar{display:flex;align-items:stretch;background:var(--panel,#101828);
+  border-bottom:1px solid var(--border,rgba(255,255,255,0.07));
+  padding:0 8px;gap:2px;flex-shrink:0;font-family:var(--fm,'Fira Code',monospace);
+  height:32px;grid-column:1/-1;z-index:5;}
+.kv-tab{display:flex;align-items:center;gap:6px;padding:0 14px;cursor:pointer;
+  font-size:10px;color:var(--t2,#5a7898);letter-spacing:.10em;text-transform:uppercase;
+  border-bottom:2px solid transparent;transition:all 0.14s;}
+.kv-tab:hover{color:var(--t1,#c8d8f0);}
+.kv-tab.active{color:var(--accent,#00a0c0);border-bottom-color:var(--accent,#00a0c0);}
+.kv-tab.kv-kanvas-tab.active{color:#0090a8;border-bottom-color:#0090a8;}
+.kv-tab.kv-kanvas-tab.active .kv-tm{background:linear-gradient(135deg,#001c28,#005878,#0090a8);}
+.kv-tm{width:14px;height:14px;border-radius:3px;background:var(--t3,#2a3858);
+  display:flex;align-items:center;justify-content:center;
+  font-size:6px;color:#000;font-weight:700;flex-shrink:0;}
+/* KANVAS pane layout */
+.kv-pane{display:none;flex:1;overflow:hidden;position:relative;flex-direction:row;}
+.kv-pane.visible{display:flex;}
+body.kv-mode .kv-pane{display:flex;}
+/* KANVAS sidebar */
+.kv-ann-side{width:52px;background:var(--panel,#101828);border-right:1px solid var(--border,rgba(255,255,255,0.07));
+  display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:4px;flex-shrink:0;}
+.kv-tool{width:36px;height:36px;border-radius:6px;border:1px solid transparent;
+  background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--t2,#5a7898);font-family:var(--fm);font-size:8px;letter-spacing:.04em;
+  flex-direction:column;gap:2px;transition:all .13s;}
+.kv-tool:hover{background:rgba(0,144,168,0.08);color:#0090a8;border-color:rgba(0,144,168,0.25);}
+.kv-tool.act{background:rgba(0,144,168,0.14);color:#0090a8;border-color:#0090a8;}
+.kv-tool svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;}
+.kv-ann-sep{width:28px;height:1px;background:var(--border);margin:4px 0;}
+/* KANVAS canvas wrapper */
+.kv-cv-wrap{flex:1;position:relative;overflow:hidden;}
+.kv-ann-canvas{position:absolute;top:0;left:0;width:100%;height:100%;
+  cursor:crosshair;background:#101828;display:block;}
+body.kv-mode .kv-ann-canvas{background:#0e1820;}
+/* Mode indicator */
+.kv-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+  font-family:var(--fm);font-size:9px;color:#0090a8;opacity:.55;
+  background:rgba(0,0,0,0.4);padding:3px 10px;border-radius:4px;pointer-events:none;
+  letter-spacing:.08em;text-transform:uppercase;}
 </style>
 </head>
 <body>
@@ -262,8 +311,40 @@ input[type="file"] { display:none; }
     <div class="sidebar-spacer"></div>
   </div>
 
+  
+<div class="kv-tab-bar">
+  <div class="kv-tab active" id="kon-tab-model" onclick="switchTab_KON('model')">
+    <div class="kv-tm" style="background:linear-gradient(135deg,#0c1824,#1e4a80,#4a8fd4);color:#fff;font-size:5px;">KON</div>
+    Floor Plan
+  </div>
+  <div class="kv-tab kv-kanvas-tab" id="kon-tab-kv" onclick="switchTab_KON('kanvas')">
+    <div class="kv-tm">KV</div>KANVAS
+  </div>
+</div>
+<div class="kv-pane" id="kv-pane-kon" style="position:absolute;inset:0;top:32px;">
+  <div class="kv-ann-side">
+    <button class="kv-tool act" data-tool="dim" title="Linear Dimension">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="17" x2="21" y2="17"/><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="7" x2="3" y2="17"/><line x1="21" y1="7" x2="21" y2="17"/></svg>DIM
+    </button>
+    <button class="kv-tool" data-tool="text" title="Text Label">
+      <svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>TXT
+    </button>
+    <div class="kv-ann-sep"></div>
+    <button class="kv-tool" data-tool="clear" title="Clear All">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>CLR
+    </button>
+    <div class="kv-ann-sep"></div>
+    <button class="kv-tool" id="kv-export-KON" title="Export .KNV">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>KNV
+    </button>
+  </div>
+  <div class="kv-cv-wrap">
+    <canvas class="kv-ann-canvas" id="kv-canvas-kon"></canvas>
+    <div class="kv-hint">Click two points &#8594; dimension &nbsp;&middot;&nbsp; Right-drag to pan &nbsp;&middot;&nbsp; Scroll to zoom</div>
+  </div>
+</div>
   <!-- CANVAS -->
-  <div id="canvas-wrap">
+  <div id="canvas-wrap" style="flex:1;overflow:hidden;position:relative;">
     <canvas id="main-canvas"></canvas>
     <div class="snap-ring" id="snap-ring"></div>
     <div id="coord-overlay"><span id="cx">0</span> mm &nbsp; <span id="cy">0</span> mm</div>
@@ -1022,6 +1103,177 @@ setTool('wall');
 updateGridLabel();
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
+
+// ── KANVAS EXPORT ─────────────────────────────────────────────────
+// Exports KONSTRUCT floor plan as KANVAS v1.0 .knv paperspace file.
+function exportKANVAS(){
+  if(!Scene.walls.length){showToast('No walls to export');return;}
+  const MAT_COLOR={
+    'brick-ext':'#b09070','block-int':'#c0b8b0','timber':'#c8a878',
+    'gypsum':'#e0dcd8','concrete':'#a0a098','glass':'#88c8e0'
+  };
+  const LAYERS=[
+    {name:'Walls',       color:'#4a8fd4', visible:true},
+    {name:'Annotations', color:'#0090a8', visible:true},
+  ];
+  let nid=1; const strokes=[];
+  for(const wall of Scene.walls){
+    const col=MAT_COLOR[wall.material]||'#4a8fd4';
+    const thick=(wall.thickness||0.2)*1000; // convert m→mm for KANVAS
+    const x1=wall.x1*1000,y1=wall.y1*1000,x2=wall.x2*1000,y2=wall.y2*1000;
+    strokes.push({id:nid++,type:'stroke',layer:'Walls',
+      color:col,blend:'source-over',opacity:0.92,
+      size:Math.max(2,Math.round(thick*0.5)),taper:0,glow:false,
+      beziers:[{x0:x1,y0:y1,cx1:x1,cy1:y1,cx2:x2,cy2:y2,x3:x2,y3:y2}],
+      spinePoints:[{x:x1,y:y1,w:thick},{x:x2,y:y2,w:thick}]});
+  }
+  const knv={version:'1.0',source:'KONSTRUCT',layers:LAYERS,
+    activeLayer:'Annotations',nextId:nid,strokes,page:'A1'};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(knv,null,2)],{type:'application/json'}));
+  a.download='floor_plan.knv'; a.click();
+  showToast('Exported '+Scene.walls.length+' walls to KANVAS paperspace');
+}
+
+
+(function(){
+  const KV_KON = {
+    canvas:null,ctx:null,dims:[],texts:[],tool:'dim',phase:0,p1:null,hover:null,
+    panX:0,panY:0,scale:1,drag:false,dragX:0,dragY:0,dpx:0,dpy:0,raf:null,
+    init(){this.canvas=document.getElementById('kv-canvas-kon');if(!this.canvas)return;
+      this.ctx=this.canvas.getContext('2d');this.resize();this.bindEvents();this.schedRender();},
+    resize(){const w=this.canvas.parentElement;
+      this.canvas.width=w.clientWidth||600;this.canvas.height=w.clientHeight||400;this.schedRender();},
+    schedRender(){if(this.raf)cancelAnimationFrame(this.raf);
+      this.raf=requestAnimationFrame(()=>{this.render();this.raf=null;});},
+    w2s(wx,wy){return[wx*this.scale+this.panX,wy*this.scale+this.panY];},
+    s2w(sx,sy){return[(sx-this.panX)/this.scale,(sy-this.panY)/this.scale];},
+    fitToContent(b){if(!b||!this.canvas)return;const pad=50,W=this.canvas.width,H=this.canvas.height;
+      const bw=b.maxX-b.minX||100,bh=b.maxY-b.minY||100;
+      this.scale=Math.min((W-pad*2)/bw,(H-pad*2)/bh,4);
+      this.panX=W/2-(b.minX+bw/2)*this.scale;this.panY=H/2-(b.minY+bh/2)*this.scale;},
+    render(){const c=this.ctx,W=this.canvas.width,H=this.canvas.height;
+      c.clearRect(0,0,W,H);c.fillStyle='#0b1620';c.fillRect(0,0,W,H);
+      const gs=Math.max(5,Math.round(10*this.scale)),ox=this.panX%gs,oy=this.panY%gs;
+      c.strokeStyle='rgba(0,144,168,0.07)';c.lineWidth=0.5;
+      for(let x=ox;x<W;x+=gs){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}
+      for(let y=oy;y<H;y+=gs){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}
+      kvDrawRefKON(c,this);
+      this.dims.forEach(d=>this.drawDim(c,d));
+      this.texts.forEach(t=>this.drawText(c,t));
+      if(this.phase===1&&this.p1&&this.hover){
+        const[ax,ay]=this.w2s(this.p1.x,this.p1.y),[bx,by]=this.w2s(this.hover.x,this.hover.y);
+        c.strokeStyle='rgba(0,144,168,0.55)';c.lineWidth=1;c.setLineDash([4,4]);
+        c.beginPath();c.moveTo(ax,ay);c.lineTo(bx,by);c.stroke();c.setLineDash([]);}},
+    drawDim(c,d){const u=()=>"mm"();
+      const[ax,ay]=this.w2s(d.x1,d.y1),[bx,by]=this.w2s(d.x2,d.y2);
+      const dx=bx-ax,dy=by-ay,len=Math.sqrt(dx*dx+dy*dy);if(len<2)return;
+      const nx=-dy/len,ny=dx/len,off=d.off||30;
+      const lax=ax+nx*off,lay=ay+ny*off,lbx=bx+nx*off,lby=by+ny*off;
+      c.strokeStyle='#0090a8';c.lineWidth=1.0;
+      c.beginPath();c.moveTo(lax,lay);c.lineTo(lbx,lby);c.stroke();
+      const ang=Math.atan2(lby-lay,lbx-lax),as=7;
+      [[lax,lay,ang+Math.PI],[lbx,lby,ang]].forEach(([x,y,a])=>{
+        c.beginPath();c.moveTo(x,y);c.lineTo(x+Math.cos(a-0.35)*as,y+Math.sin(a-0.35)*as);
+        c.lineTo(x+Math.cos(a+0.35)*as,y+Math.sin(a+0.35)*as);
+        c.closePath();c.fillStyle='#0090a8';c.fill();});
+      c.strokeStyle='rgba(0,144,168,0.45)';c.lineWidth=0.7;c.setLineDash([2,3]);
+      c.beginPath();c.moveTo(ax,ay);c.lineTo(lax,lay);c.stroke();
+      c.beginPath();c.moveTo(bx,by);c.lineTo(lbx,lby);c.stroke();c.setLineDash([]);
+      const dist=Math.sqrt((d.x2-d.x1)**2+(d.y2-d.y1)**2);
+      const label=d.label||(dist.toFixed(dist<10?2:1)+' '+u);
+      const mx=(lax+lbx)/2,my=(lay+lby)/2;
+      c.save();c.translate(mx,my);c.rotate(Math.atan2(lby-lay,lbx-lax));
+      c.fillStyle='#0b1620';c.font='bold 11px Fira Code,monospace';
+      const tw=c.measureText(label).width;c.fillRect(-tw/2-4,-8,tw+8,13);
+      c.fillStyle='#0090a8';c.textAlign='center';c.textBaseline='middle';
+      c.fillText(label,0,0);c.restore();},
+    drawText(c,t){const[sx,sy]=this.w2s(t.x,t.y);
+      c.font='12px Fira Code,monospace';c.fillStyle='rgba(0,144,168,0.85)';
+      c.textAlign='left';c.textBaseline='top';c.fillText(t.text,sx,sy);},
+    bindEvents(){const cv=this.canvas;
+      cv.addEventListener('mousedown',e=>this.onDown(e));
+      cv.addEventListener('mousemove',e=>this.onMove(e));
+      cv.addEventListener('mouseup',e=>this.onUp(e));
+      cv.addEventListener('wheel',e=>{e.preventDefault();const z=e.deltaY>0?0.9:1.1;
+        const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+        this.panX=(this.panX-mx)*z+mx;this.panY=(this.panY-my)*z+my;
+        this.scale*=z;this.schedRender();},{passive:false});
+      cv.addEventListener('contextmenu',e=>e.preventDefault());
+      window.addEventListener('resize',()=>this.resize());},
+    getXY(e){const r=this.canvas.getBoundingClientRect();
+      return{sx:e.clientX-r.left,sy:e.clientY-r.top};},
+    onDown(e){const{sx,sy}=this.getXY(e);
+      if(e.button===2||e.button===1){this.drag=true;this.dragX=sx;this.dragY=sy;
+        this.dpx=this.panX;this.dpy=this.panY;return;}
+      if(this.tool==='dim'){const[wx,wy]=this.s2w(sx,sy);
+        if(this.phase===0){this.p1={x:wx,y:wy};this.phase=1;}
+        else{const p2={x:wx,y:wy};
+          this.dims.push({id:Date.now(),x1:this.p1.x,y1:this.p1.y,x2:p2.x,y2:p2.y,off:30});
+          this.p1=null;this.phase=0;this.schedRender();}}
+      else if(this.tool==='text'){const[wx,wy]=this.s2w(sx,sy);
+        const txt=prompt('Label:','');if(txt){this.texts.push({id:Date.now(),x:wx,y:wy,text:txt});this.schedRender();}}
+      else if(this.tool==='clear'){if(confirm('Clear annotations?')){this.dims=[];this.texts=[];this.schedRender();}this.setTool('dim');}},
+    onMove(e){const{sx,sy}=this.getXY(e);
+      if(this.drag){this.panX=this.dpx+(sx-this.dragX);this.panY=this.dpy+(sy-this.dragY);this.schedRender();return;}
+      if(this.phase===1){const[wx,wy]=this.s2w(sx,sy);this.hover={x:wx,y:wy};this.schedRender();}},
+    onUp(e){this.drag=false;},
+    setTool(t){this.tool=t;this.phase=0;this.p1=null;
+      document.querySelectorAll('#kv-pane-kon .kv-tool').forEach(b=>b.classList.toggle('act',b.dataset.tool===t));},
+    exportKNV(){const u=()=>"mm"();
+      const strokes=[...this.dims.map((d,i)=>{return{id:i+1,type:'dimension',layer:'Dimensions',
+        x1:d.x1,y1:d.y1,x2:d.x2,y2:d.y2,offset:d.off||30,unit:u,color:'#0090a8',opacity:1,beziers:[]};})];
+      this.texts.forEach((t,i)=>strokes.push({id:this.dims.length+i+1,type:'text',layer:'Annotations',
+        x:t.x,y:t.y,text:t.text,color:'#0090a8',size:12,opacity:1,beziers:[]}));
+      const knv={version:'1.0',source:'KON',
+        layers:[{name:'Dimensions',color:'#0090a8',visible:true},{name:'Annotations',color:'#0090a8',visible:true}],
+        activeLayer:'Dimensions',nextId:strokes.length+1,strokes,page:'A1'};
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([JSON.stringify(knv,null,2)],{type:'application/json'}));
+      a.download='kon_dims.knv';a.click();}
+  };
+  function switchTab_KON(tab){
+    const isKV=(tab==='kanvas');
+    document.getElementById('kon-tab-model').classList.toggle('active',!isKV);
+    document.getElementById('kon-tab-kv').classList.toggle('active',isKV);
+    const pane=document.getElementById('kv-pane-kon');
+    pane.classList.toggle('visible',isKV);
+    if(isKV){KV_KON.resize();KV_KON.schedRender();}
+  }
+  window.switchTab_KON=switchTab_KON;window.KV_KON=KV_KON;
+  document.addEventListener('DOMContentLoaded',function(){
+    KV_KON.init();
+    document.querySelectorAll('#kv-pane-kon .kv-tool[data-tool]').forEach(btn=>
+      btn.addEventListener('click',()=>KV_KON.setTool(btn.dataset.tool)));
+    document.getElementById('kv-export-KON')?.addEventListener('click',()=>KV_KON.exportKNV());
+  });
+})();
+
+function kvDrawRefKON(c,kv) {
+  if(!window.Scene||!Scene.walls||!Scene.walls.length) return;
+  if(kv.scale===1&&kv.panX===0) {
+    let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+    Scene.walls.forEach(w=>{
+      minX=Math.min(minX,w.x1*1000,w.x2*1000);maxX=Math.max(maxX,w.x1*1000,w.x2*1000);
+      minY=Math.min(minY,w.y1*1000,w.y2*1000);maxY=Math.max(maxY,w.y1*1000,w.y2*1000);
+    });
+    if(maxX>minX) kv.fitToContent({minX,minY,maxX,maxY});
+  }
+  const MAT={'brick-ext':'rgba(176,144,112,0.50)','block-int':'rgba(180,172,164,0.45)',
+    'timber':'rgba(196,168,120,0.50)','gypsum':'rgba(210,206,200,0.40)',
+    'concrete':'rgba(156,156,148,0.45)','glass':'rgba(130,190,220,0.40)'};
+  c.lineCap='square';
+  Scene.walls.forEach(w=>{
+    const col=MAT[w.material]||'rgba(140,160,190,0.40)';
+    const thick=Math.max(3,(w.thickness||0.2)*1000*kv.scale);
+    const [ax,ay]=kv.w2s(w.x1*1000,w.y1*1000);
+    const [bx,by]=kv.w2s(w.x2*1000,w.y2*1000);
+    c.strokeStyle=col; c.lineWidth=thick;
+    c.beginPath();c.moveTo(ax,ay);c.lineTo(bx,by);c.stroke();
+  });
+  c.lineCap='butt';
+}
+
 </script>
 </body>
 </html>

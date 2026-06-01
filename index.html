@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
-  KERFsuite™ — Kernel-Aided Design Suite
-  Copyright (C) 2024-2025 KERFsuite / withshalom
+  KADsuite™ — Kernel-Aided Design Suite
+  Copyright (C) 2024-2025 KADsuite / withshalom
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -17,11 +17,24 @@
   along with this program. If not, see <https://www.gnu.org/licenses/>.
 
   SPDX-License-Identifier: AGPL-3.0-or-later
-  Commercial use requires a separate license — see KERFsuite for details: https://withshalom.github.io
+  KADsuite™, KAD™, KAM™, KUBE™, KARVE™, KONSTRUCT™, KULTIVATE™,
+  KODE™, and KANVAS™ are trademarks of withshalom / KADsuite.
+  Trademark rights are independent of and not transferred by this
+  AGPL-3.0 license. Forks and derivative works may not use these
+  marks or any confusingly similar names without express written
+  permission. The AGPL license governs this source code only.
+
+  Forks must remain open source under AGPL — KADsuite™ trademarks
+  and branding are not licensed and may not be used in any fork or
+  derivative work without separate written permission.
+
+  KADsuite™ trademarks are not covered by the AGPL-3.0 license.
+  Native builds are separate proprietary products.
 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="copyright" content="Copyright (C) 2024-2025 KADsuite / withshalom. Licensed under AGPL-3.0-or-later. KADsuite™, KAD™, KAM™, KUBE™, KARVE™, KONSTRUCT™, KULTIVATE™, KODE™, and KANVAS™ are trademarks of withshalom / KADsuite. Forks must remain open source under AGPL. Trademarks not licensed by AGPL.">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>.KONSTRUCT · Kernel-Operated Navigation Site Terrain Renovation Unified Construction Technology</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -265,13 +278,13 @@ body.kv-mode .kv-ann-canvas{background:#0e1820;}
     <button class="tbb" onclick="newDoc()" title="New">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>New
     </button>
-    <button class="tbb" onclick="saveDoc()" title="Save .kon (Ctrl+S)">
+    <button class="tbb" onclick="saveDoc()" title="Save .kst (Ctrl+S)">
       <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save
     </button>
-    <button class="tbb" onclick="document.getElementById('load-input').click()" title="Open .kon">
+    <button class="tbb" onclick="document.getElementById('load-input').click()" title="Open .kst">
       <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Open
     </button>
-    <input type="file" id="load-input" accept=".kon,.json" onchange="loadDoc(event)">
+    <input type="file" id="load-input" accept=".kst,.json" onchange="loadDoc(event)">
     <div class="tb-sep"></div>
     <div style="font-size:9px;color:var(--t3);letter-spacing:0.08em;margin-right:6px;">WALL TYPE</div>
     <div id="tb-wall-types">
@@ -378,7 +391,7 @@ body.kv-mode .kv-ann-canvas{background:#0e1820;}
 <script>
 'use strict';
 // ════════════════════════════════════════════════════════════════════════
-//  .KONSTRUCT v0.1 — Wall Tool (Phase 1)
+//  .KONSTRUCT v0.0 — Wall Tool (Phase 1)
 //  Borrows: camera, grid, snap ring, onWheel, mouse pattern from KAD
 //  New: wall data model, wall join algorithm, wall rendering + hatch
 // ════════════════════════════════════════════════════════════════════════
@@ -970,12 +983,12 @@ function newDoc() {
 }
 
 function saveDoc() {
-  const doc={version:'1.0',source:'KONSTRUCT',walls:Scene.walls,nextId:Scene.nextId};
+  const doc={version:'0.0',source:'KONSTRUCT',walls:Scene.walls,nextId:Scene.nextId};
   const blob=new Blob([JSON.stringify(doc,null,2)],{type:'application/json'});
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download='structure.kon'; a.click();
+  a.href=URL.createObjectURL(blob); a.download='structure.kst'; a.click();
   URL.revokeObjectURL(a.href);
-  showToast('Saved structure.kon');
+  showToast('Saved structure.kst');
 }
 
 function loadDoc(e) {
@@ -990,7 +1003,7 @@ function loadDoc(e) {
       document.getElementById('sb-count').textContent=Scene.walls.length;
       updateRightPanel(); render();
       showToast('Loaded '+f.name);
-    } catch { showToast('Error: not a valid .kon file'); }
+    } catch { showToast('Error: not a valid .kst file'); }
   };
   r.readAsText(f);
   e.target.value='';
@@ -1105,7 +1118,7 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 // ── KANVAS EXPORT ─────────────────────────────────────────────────
-// Exports KONSTRUCT floor plan as KANVAS v1.0 .knv paperspace file.
+// Exports KONSTRUCT floor plan as KANVAS v0.0 .knv paperspace file.
 function exportKANVAS(){
   if(!Scene.walls.length){showToast('No walls to export');return;}
   const MAT_COLOR={
@@ -1127,7 +1140,7 @@ function exportKANVAS(){
       beziers:[{x0:x1,y0:y1,cx1:x1,cy1:y1,cx2:x2,cy2:y2,x3:x2,y3:y2}],
       spinePoints:[{x:x1,y:y1,w:thick},{x:x2,y:y2,w:thick}]});
   }
-  const knv={version:'1.0',source:'KONSTRUCT',layers:LAYERS,
+  const knv={version:'0.0',source:'KONSTRUCT',layers:LAYERS,
     activeLayer:'Annotations',nextId:nid,strokes,page:'A1'};
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(knv,null,2)],{type:'application/json'}));
@@ -1225,7 +1238,7 @@ function exportKANVAS(){
         x1:d.x1,y1:d.y1,x2:d.x2,y2:d.y2,offset:d.off||30,unit:u,color:'#0090a8',opacity:1,beziers:[]};})];
       this.texts.forEach((t,i)=>strokes.push({id:this.dims.length+i+1,type:'text',layer:'Annotations',
         x:t.x,y:t.y,text:t.text,color:'#0090a8',size:12,opacity:1,beziers:[]}));
-      const knv={version:'1.0',source:'KON',
+      const knv={version:'0.0',source:'KON',
         layers:[{name:'Dimensions',color:'#0090a8',visible:true},{name:'Annotations',color:'#0090a8',visible:true}],
         activeLayer:'Dimensions',nextId:strokes.length+1,strokes,page:'A1'};
       const a=document.createElement('a');

@@ -150,6 +150,18 @@ input[type="file"] { display:none; }
 #main-canvas { display:block; position:absolute; top:0; left:0; }
 
 /* Snap ring */
+.mep-pill {
+  font-family: var(--fm); font-size: 9px; padding: 2px 8px;
+  border-radius: 3px; border: 1px solid rgba(255,255,255,0.15);
+  background: transparent; color: var(--mc, #888); cursor: pointer;
+  letter-spacing: 0.06em; transition: all 0.13s;
+}
+.mep-pill.active {
+  background: color-mix(in srgb, var(--mc, #888) 20%, transparent);
+  border-color: var(--mc, #888); font-weight: 700;
+}
+.mep-pill:hover { border-color: var(--mc, #888); }
+
 .snap-ring {
   position:absolute; pointer-events:none; width:12px; height:12px;
   border:1.5px solid var(--acc); border-radius:50%;
@@ -260,6 +272,21 @@ body.kv-mode .kv-ann-canvas{background:#0e1820;}
   font-family:var(--fm);font-size:9px;color:#0090a8;opacity:.55;
   background:rgba(0,0,0,0.4);padding:3px 10px;border-radius:4px;pointer-events:none;
   letter-spacing:.08em;text-transform:uppercase;}
+
+
+
+/* ── Return to KADsuite ───────────────────────────────────────────── */
+#btn-return-kadsuite {
+  display:flex; align-items:center; gap:6px; padding:4px 12px;
+  background:none; border:1px solid rgba(0,144,168,0.4); border-radius:3px;
+  color:#0090a8; font-family:var(--fm,'Fira Code',monospace); font-size:9px;
+  letter-spacing:0.14em; text-transform:uppercase; cursor:pointer;
+  transition:all .2s; text-decoration:none; flex-shrink:0; white-space:nowrap;
+  margin-right:4px;
+}
+#btn-return-kadsuite:hover {
+  background:rgba(0,144,168,0.08); border-color:#0090a8;
+}
 </style>
 </head>
 <body>
@@ -286,13 +313,31 @@ body.kv-mode .kv-ann-canvas{background:#0e1820;}
     </button>
     <input type="file" id="load-input" accept=".kst,.json" onchange="loadDoc(event)">
     <div class="tb-sep"></div>
-    <div style="font-size:9px;color:var(--t3);letter-spacing:0.08em;margin-right:6px;">WALL TYPE</div>
-    <div id="tb-wall-types">
-      <button class="wt-pill active" data-wt="ext-brick" onclick="setWallType('ext-brick')">Ext Brick 325</button>
-      <button class="wt-pill" data-wt="int-block"  onclick="setWallType('int-block')">Int Block 100</button>
-      <button class="wt-pill" data-wt="partition"  onclick="setWallType('partition')">Partition 90</button>
-      <button class="wt-pill" data-wt="concrete"   onclick="setWallType('concrete')">Concrete 200</button>
-      <button class="wt-pill" data-wt="curtain"    onclick="setWallType('curtain')">Curtain 50</button>
+    <div style="font-size:9px;color:var(--t3);letter-spacing:0.08em;margin-right:6px;">WALL</div>
+    <div id="tb-wall-types" style="display:flex;flex-wrap:wrap;gap:2px;max-width:420px;">
+      <button class="wt-pill active" data-wt="ext-brick"  onclick="setWallType('ext-brick')">Ext Brick</button>
+      <button class="wt-pill" data-wt="dbl-brick"  onclick="setWallType('dbl-brick')">Dbl Brick</button>
+      <button class="wt-pill" data-wt="int-block"  onclick="setWallType('int-block')">Int Block</button>
+      <button class="wt-pill" data-wt="cmu-8"      onclick="setWallType('cmu-8')">CMU 8"</button>
+      <button class="wt-pill" data-wt="cmu-12"     onclick="setWallType('cmu-12')">CMU 12"</button>
+      <button class="wt-pill" data-wt="stud-2x4"   onclick="setWallType('stud-2x4')">2×4 Stud</button>
+      <button class="wt-pill" data-wt="stud-2x6"   onclick="setWallType('stud-2x6')">2×6 Stud</button>
+      <button class="wt-pill" data-wt="timber"     onclick="setWallType('timber')">Timber</button>
+      <button class="wt-pill" data-wt="partition"  onclick="setWallType('partition')">Partition</button>
+      <button class="wt-pill" data-wt="metal-stud" onclick="setWallType('metal-stud')">Metal Stud</button>
+      <button class="wt-pill" data-wt="concrete"   onclick="setWallType('concrete')">Concrete</button>
+      <button class="wt-pill" data-wt="icf"        onclick="setWallType('icf')">ICF</button>
+      <button class="wt-pill" data-wt="sip"        onclick="setWallType('sip')">SIP</button>
+      <button class="wt-pill" data-wt="rammed"     onclick="setWallType('rammed')">Rammed Earth</button>
+      <button class="wt-pill" data-wt="curtain"    onclick="setWallType('curtain')">Curtain</button>
+    </div>
+    <div class="tb-sep"></div>
+    <!-- MEP layer bar — visible when a MEP tool is active -->
+    <div id="tb-mep-bar" style="display:none;align-items:center;gap:4px;">
+      <span style="font-size:9px;color:var(--t3);letter-spacing:0.08em;">MEP</span>
+      <button class="mep-pill active" data-ml="elec"  onclick="setMEPLayer('elec')"  style="--mc:#f0c000;">⚡ ELEC</button>
+      <button class="mep-pill"        data-ml="plumb" onclick="setMEPLayer('plumb')" style="--mc:#00a0d8;">💧 PLUMB</button>
+      <button class="mep-pill"        data-ml="mech"  onclick="setMEPLayer('mech')"  style="--mc:#e05010;">🌀 MECH</button>
     </div>
   </div>
 
@@ -305,6 +350,18 @@ body.kv-mode .kv-ann-canvas{background:#0e1820;}
       </button>
       <button class="tool-btn active" id="tool-wall" onclick="setTool('wall')" title="Wall (W)">
         <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="1"/><line x1="7" y1="7" x2="7" y2="17"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="17" y1="7" x2="17" y2="17"/></svg>WALL
+      </button>
+      <button class="tool-btn" id="tool-door" onclick="setTool('door')" title="Door (D)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="2" width="13" height="20" rx="1"/><path d="M16 12 A8 8 0 0 1 8 4" fill="none"/><circle cx="14" cy="12" r="1" fill="currentColor"/></svg>DOOR
+      </button>
+      <button class="tool-btn" id="tool-window" onclick="setTool('window')" title="Window (I)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="1"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="9" y1="8" x2="9" y2="16"/><line x1="15" y1="8" x2="15" y2="16"/></svg>WINDOW
+      </button>
+      <button class="tool-btn" id="tool-mep-run" onclick="setTool('mep-run')" title="MEP Run (M)">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12" stroke-width="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>MEP RUN
+      </button>
+      <button class="tool-btn" id="tool-mep-sym" onclick="setTool('mep-sym')" title="MEP Symbol (Y)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg>MEP SYM
       </button>
       <button class="tool-btn del-btn" id="tool-del" onclick="deleteSelected()" title="Delete selected (Del)">
         <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>DELETE
@@ -333,6 +390,9 @@ body.kv-mode .kv-ann-canvas{background:#0e1820;}
   <div class="kv-tab kv-kanvas-tab" id="kon-tab-kv" onclick="switchTab_KON('kanvas')">
     <div class="kv-tm">KV</div>KANVAS
   </div>
+  <div style="flex:1;"></div>
+  <a href="https://kadsuite.com" id="btn-return-kadsuite">&#8592; Return to KADsuite</a>
+
 </div>
 <div class="kv-pane" id="kv-pane-kon" style="position:absolute;inset:0;top:32px;">
   <div class="kv-ann-side">
@@ -384,7 +444,9 @@ body.kv-mode .kv-ann-canvas{background:#0e1820;}
     <div class="sb-item">SNAP <span id="sb-snap">ON</span></div>
     <div class="sb-item">GRID <span id="sb-grid">100mm</span></div>
     <div class="sb-item">WALLS <span id="sb-count">0</span></div>
-    <div id="sb-tip">W wall · V select · Shift lock 15° · Esc cancel · S snap · G grid</div>
+    <div class="sb-item">OPENINGS <span id="sb-openings">0</span></div>
+    <div class="sb-item">MEP <span id="sb-mep">0</span></div>
+    <div id="sb-tip">W wall · D door · I window · M mep run · Y mep sym · V select · Shift lock 15° · Esc cancel</div>
   </div>
 </div>
 
@@ -409,35 +471,106 @@ const C = {
 
 // ── Materials ─────────────────────────────────────────────────────────────
 const MATERIALS = {
-  'brick-ext': { label:'Ext Brick',   fill:'rgba(200,155,100,0.30)', line:'#8a5030', hatch:'cross',   swatch:'#c89b64' },
-  'block-int': { label:'Int Block',   fill:'rgba(160,165,170,0.30)', line:'#505560', hatch:'dots',    swatch:'#a0a5aa' },
-  'timber':    { label:'Timber',      fill:'rgba(210,165,105,0.30)', line:'#705030', hatch:'horiz',   swatch:'#d2a569' },
-  'gypsum':    { label:'Gypsum',      fill:'rgba(220,216,210,0.28)', line:'#808890', hatch:'none',    swatch:'#dcd8d2' },
-  'concrete':  { label:'Concrete',    fill:'rgba(185,180,175,0.30)', line:'#505050', hatch:'stipple', swatch:'#b9b4af' },
-  'glass':     { label:'Glazing',     fill:'rgba(150,195,225,0.20)', line:'#4090c0', hatch:'none',    swatch:'#96c3e1' },
+  'brick-ext':  { label:'Ext Brick',    fill:'rgba(200,155,100,0.30)', line:'#8a5030', hatch:'cross',    swatch:'#c89b64' },
+  'brick-dbl':  { label:'Dbl Brick',    fill:'rgba(200,145,90,0.30)',  line:'#8a4828', hatch:'cross',    swatch:'#c88a5a' },
+  'block-int':  { label:'Int Block',    fill:'rgba(160,165,170,0.30)', line:'#505560', hatch:'dots',     swatch:'#a0a5aa' },
+  'cmu-8':      { label:'CMU 8"',       fill:'rgba(170,170,165,0.30)', line:'#484848', hatch:'cmu',      swatch:'#aaaaA5' },
+  'cmu-12':     { label:'CMU 12"',      fill:'rgba(165,165,160,0.32)', line:'#484848', hatch:'cmu',      swatch:'#a5a5a0' },
+  'timber':     { label:'Timber',       fill:'rgba(210,165,105,0.30)', line:'#705030', hatch:'horiz',    swatch:'#d2a569' },
+  'stud-2x4':   { label:'Stud 2×4',     fill:'rgba(215,170,110,0.28)', line:'#706040', hatch:'horiz',    swatch:'#d7aa6e' },
+  'stud-2x6':   { label:'Stud 2×6',     fill:'rgba(215,170,110,0.28)', line:'#706040', hatch:'horiz',    swatch:'#d7aa6e' },
+  'metal-stud': { label:'Metal Stud',   fill:'rgba(180,185,195,0.25)', line:'#607080', hatch:'horiz',    swatch:'#b4b9c3' },
+  'gypsum':     { label:'Gypsum',       fill:'rgba(220,216,210,0.28)', line:'#808890', hatch:'none',     swatch:'#dcd8d2' },
+  'concrete':   { label:'Concrete',     fill:'rgba(185,180,175,0.30)', line:'#505050', hatch:'stipple',  swatch:'#b9b4af' },
+  'icf':        { label:'ICF',          fill:'rgba(175,195,185,0.30)', line:'#407060', hatch:'stipple',  swatch:'#afc3bb' },
+  'sip':        { label:'SIP',          fill:'rgba(195,185,155,0.30)', line:'#607040', hatch:'horiz',    swatch:'#c3b99b' },
+  'rammed':     { label:'Rammed Earth', fill:'rgba(195,165,120,0.32)', line:'#705828', hatch:'stipple',  swatch:'#c3a578' },
+  'glass':      { label:'Glazing',      fill:'rgba(150,195,225,0.20)', line:'#4090c0', hatch:'none',     swatch:'#96c3e1' },
+  // MEP pseudo-materials (used for layer display only)
+  'elec':       { label:'Electrical',   fill:'rgba(255,200,0,0.15)',   line:'#c8a000', hatch:'none',     swatch:'#c8a000' },
+  'plumb':      { label:'Plumbing',     fill:'rgba(0,160,220,0.15)',   line:'#0090d0', hatch:'none',     swatch:'#0090d0' },
+  'mech':       { label:'Mechanical',   fill:'rgba(220,80,30,0.15)',   line:'#cc4818', hatch:'none',     swatch:'#cc4818' },
 };
 
 // ── Wall types ────────────────────────────────────────────────────────────
 const WALL_TYPES = {
-  'ext-brick': { label:'Ext Brick 325', thickness:0.325, material:'brick-ext',  height:3.0 },
-  'int-block':  { label:'Int Block 100',  thickness:0.100, material:'block-int',  height:3.0 },
-  'partition':  { label:'Partition 90',   thickness:0.090, material:'gypsum',     height:3.0 },
-  'concrete':   { label:'Concrete 200',   thickness:0.200, material:'concrete',   height:3.0 },
-  'curtain':    { label:'Curtain 50',     thickness:0.050, material:'glass',      height:3.0 },
+  // Masonry
+  'ext-brick':  { label:'Ext Brick 325',  thickness:0.325, material:'brick-ext',  height:3.0, structural:true  },
+  'dbl-brick':  { label:'Dbl Brick 250',  thickness:0.250, material:'brick-dbl',  height:3.0, structural:true  },
+  'int-block':  { label:'Int Block 100',  thickness:0.100, material:'block-int',  height:3.0, structural:false },
+  'cmu-8':      { label:'CMU 8" 200',     thickness:0.200, material:'cmu-8',      height:3.0, structural:true  },
+  'cmu-12':     { label:'CMU 12" 305',    thickness:0.305, material:'cmu-12',     height:3.0, structural:true  },
+  // Wood & Light Frame
+  'stud-2x4':   { label:'Stud 2×4 89',   thickness:0.089, material:'stud-2x4',   height:3.0, structural:true  },
+  'stud-2x6':   { label:'Stud 2×6 140',  thickness:0.140, material:'stud-2x6',   height:3.0, structural:true  },
+  'timber':     { label:'Timber 150',     thickness:0.150, material:'timber',     height:3.0, structural:true  },
+  // Partition
+  'partition':  { label:'Partition 90',   thickness:0.090, material:'gypsum',     height:3.0, structural:false },
+  'metal-stud': { label:'Metal Stud 92',  thickness:0.092, material:'metal-stud', height:3.0, structural:false },
+  // Concrete & Special
+  'concrete':   { label:'Concrete 200',   thickness:0.200, material:'concrete',   height:3.0, structural:true  },
+  'icf':        { label:'ICF 305',        thickness:0.305, material:'icf',        height:3.0, structural:true  },
+  'sip':        { label:'SIP 165',        thickness:0.165, material:'sip',        height:3.0, structural:true  },
+  'rammed':     { label:'Rammed Earth 400',thickness:0.400,material:'rammed',     height:3.0, structural:true  },
+  // Glazing
+  'curtain':    { label:'Curtain 50',     thickness:0.050, material:'glass',      height:3.0, structural:false },
 };
 
 // ── Scene ──────────────────────────────────────────────────────────────────
 const Scene = {
   nextId: 1,
-  walls:  [],
+  walls:    [],
+  openings: [],   // doors and windows — {id, wallId, pos, width, type, swing}
+  mep:      [],   // MEP runs and fixtures — {id, layer, kind, x1,y1,x2,y2, symbol}
   add(w)    { w.id = this.nextId++; this.walls.push(w); return w; },
-  remove(id){ this.walls = this.walls.filter(w => w.id !== id); },
-  byId(id)  { return this.walls.find(w => w.id === id); },
-  clear()   { this.walls = []; this.nextId = 1; },
+  addOpening(o) { o.id = this.nextId++; this.openings.push(o); return o; },
+  addMEP(m)     { m.id = this.nextId++; this.mep.push(m); return m; },
+  remove(id){
+    this.walls    = this.walls.filter(w => w.id !== id);
+    this.openings = this.openings.filter(o => o.id !== id);
+    this.mep      = this.mep.filter(m => m.id !== id);
+  },
+  byId(id)  {
+    return this.walls.find(w=>w.id===id)
+        || this.openings.find(o=>o.id===id)
+        || this.mep.find(m=>m.id===id);
+  },
+  clear()   { this.walls=[]; this.openings=[]; this.mep=[]; this.nextId=1; },
+};
+
+// ── Door / Window types ───────────────────────────────────────────────────
+const DOOR_TYPES = {
+  'single':   { label:'Single Swing',  defaultW:0.914 },
+  'double':   { label:'Double Swing',  defaultW:1.524 },
+  'sliding':  { label:'Sliding',       defaultW:1.524 },
+  'pocket':   { label:'Pocket',        defaultW:0.914 },
+  'bifold':   { label:'Bifold',        defaultW:0.914 },
+};
+const WIN_TYPES = {
+  'single-hung': { label:'Single/Double Hung', defaultW:0.914 },
+  'casement':    { label:'Casement',           defaultW:0.762 },
+  'fixed':       { label:'Fixed',              defaultW:1.219 },
+  'sliding-win': { label:'Sliding',            defaultW:1.219 },
+  'bay':         { label:'Bay',                defaultW:1.829 },
+};
+
+// ── MEP layer config (AIA color conventions) ──────────────────────────────
+const MEP_LAYERS = {
+  elec:  { label:'Electrical', color:'#f0c000', lineW:1.5, dash:[],      active:true  },
+  plumb: { label:'Plumbing',   color:'#00a0d8', lineW:1.5, dash:[8,4],   active:true  },
+  mech:  { label:'Mechanical', color:'#e05010', lineW:2.0, dash:[],      active:true  },
+};
+let activeMEPLayer = 'elec';
+
+// MEP symbol types per layer
+const MEP_SYMBOLS = {
+  elec:  ['run','panel','outlet','switch','light-ceil','light-wall','circuit'],
+  plumb: ['run-supply','run-waste','run-vent','sink','toilet','tub','water-heater','hose-bib'],
+  mech:  ['duct','diffuser','return','equipment','thermostat'],
 };
 
 // ── Camera (verbatim from KAD, adapted) ────────────────────────────────────
-const cam = { panX:0, panY:0, zoom:80, minZoom:5, maxZoom:2000 };
+const cam = { panX:0, panY:0, zoom:25, minZoom:3, maxZoom:2000 };
 function worldToScreen(wx,wy) { return { x: wx*cam.zoom+cam.panX, y: -wy*cam.zoom+cam.panY }; }
 function screenToWorld(sx,sy) { return { x:(sx-cam.panX)/cam.zoom, y:-(sy-cam.panY)/cam.zoom }; }
 
@@ -567,7 +700,7 @@ function computeMiter(wallA, isEnd, conn) {
 
   // Miter: intersect A_left line with B_left line, A_right with B_right
   // Both lines run in their wall's own direction
-  const MITER_MAX = Math.max(wallA.thickness, conn.wall.thickness) * 8;
+  const MITER_MAX = Math.max(wallA.thickness, conn.wall.thickness) * 3;
   let left  = lineIntersect(AL, rA.dir, BL, rB.dir);
   let right = lineIntersect(AR, rA.dir, BR, rB.dir);
 
@@ -700,20 +833,24 @@ function drawRubberBandWall() {
   if (len<0.001) return;
 
   const wt=WALL_TYPES[activeWallType];
-  const previewWall={x1:sx,y1:sy,x2:ex,y2:ey,thickness:wt.thickness,material:wt.material,id:-1};
-  const c=rawCorners(previewWall); // raw (no joins for preview)
+  // Temporarily add preview wall to Scene so join computation works correctly
+  const previewWall={x1:sx,y1:sy,x2:ex,y2:ey,
+                     thickness:wt.thickness,material:wt.material,id:-1};
+  Scene.walls.push(previewWall);
+  const c=getWallCorners(previewWall); // with joins — matches committed result
+  Scene.walls.pop(); // remove temp wall
   if (!c) return;
 
   const sl=ws(c.SL),sr=ws(c.SR),el=ws(c.EL),er=ws(c.ER);
   const mat=MATERIALS[wt.material];
 
   ctx.save();
-  ctx.globalAlpha=0.55;
+  ctx.globalAlpha=0.60;
   ctx.beginPath();
   ctx.moveTo(sl.x,sl.y);ctx.lineTo(el.x,el.y);ctx.lineTo(er.x,er.y);ctx.lineTo(sr.x,sr.y);
   ctx.closePath();
   ctx.fillStyle=mat.fill; ctx.fill();
-  ctx.strokeStyle=mat.line; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+  ctx.strokeStyle=mat.line; ctx.lineWidth=1.5; ctx.setLineDash([5,3]);
   ctx.stroke(); ctx.setLineDash([]);
 
   // Length annotation
@@ -723,6 +860,305 @@ function drawRubberBandWall() {
   ctx.globalAlpha=0.9;
   ctx.fillText(lenMm+'mm', midS.x, midS.y-10);
   ctx.restore();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// DOORS & WINDOWS
+// ════════════════════════════════════════════════════════════════════════════
+
+// Find wall nearest to click point, return {wall, t} where t=0..1 along wall
+function findWallAtPoint(wx, wy, maxDist) {
+  let best = null, bestD = maxDist * maxDist;
+  for (const wall of Scene.walls) {
+    const dx = wall.x2 - wall.x1, dy = wall.y2 - wall.y1;
+    const len2 = dx*dx + dy*dy; if (len2 < 1e-10) continue;
+    const t = Math.max(0.05, Math.min(0.95,
+      ((wx-wall.x1)*dx + (wy-wall.y1)*dy) / len2));
+    const px = wall.x1 + t*dx, py = wall.y1 + t*dy;
+    const d2 = (wx-px)*(wx-px) + (wy-py)*(wy-py);
+    if (d2 < bestD) { bestD = d2; best = { wall, t, px, py }; }
+  }
+  return best;
+}
+
+// Place a door or window opening on a wall
+function placeOpening(wx, wy, kind) {
+  const hit = findWallAtPoint(wx, wy, 0.5 / cam.zoom * 100);
+  if (!hit) { showToast('Click on a wall to place ' + kind); return; }
+  const wt = kind === 'door' ? DOOR_TYPES[activeDoorType] : WIN_TYPES[activeWinType];
+  Scene.addOpening({
+    wallId:  hit.wall.id,
+    pos:     hit.t,           // 0..1 along wall
+    width:   wt.defaultW,     // metres
+    kind,
+    type:    kind === 'door' ? activeDoorType : activeWinType,
+    swing:   'left',          // door swing side
+  });
+  document.getElementById('sb-count').textContent = Scene.walls.length;
+  render();
+  showToast((kind==='door'?'Door':'Window') + ' placed · right-click to change type');
+}
+
+// Draw a door in plan view
+function drawDoor(o, wall) {
+  const dx = wall.x2-wall.x1, dy = wall.y2-wall.y1;
+  const len = Math.hypot(dx,dy); if(len<1e-6) return;
+  const ux=dx/len, uy=dy/len;
+  const nx=-uy, ny=ux; // wall normal
+  const thick = wall.thickness;
+
+  // Door centre along wall
+  const cx = wall.x1 + o.pos*dx;
+  const cy = wall.y1 + o.pos*dy;
+  const hw = o.width/2;
+
+  // Door opening endpoints
+  const p1 = { x: cx - hw*ux, y: cy - hw*uy };
+  const p2 = { x: cx + hw*ux, y: cy + hw*uy };
+
+  const s1 = worldToScreen(p1.x, p1.y);
+  const s2 = worldToScreen(p2.x, p2.y);
+
+  ctx.save();
+  ctx.strokeStyle = '#7a9ab8';
+  ctx.lineWidth   = 1.5;
+
+  // Jamb lines (perpendicular to wall at each side of opening)
+  const jd = thick * 0.5 * cam.zoom;
+  const snx = -uy * jd, sny = ux * jd; // normal in screen space (approx)
+
+  // Door panel line
+  ctx.beginPath();
+  ctx.moveTo(s1.x, s1.y);
+  ctx.lineTo(s2.x, s2.y);
+  ctx.stroke();
+
+  // Swing arc from hinge point
+  const hingeS = o.swing === 'left' ? s1 : s2;
+  const leafS  = o.swing === 'left' ? s2 : s1;
+  const r = Math.hypot(leafS.x-hingeS.x, leafS.y-hingeS.y);
+  const wallAngle = Math.atan2(-(s2.y-s1.y), s2.x-s1.x);
+  const swingDir  = o.swing === 'left' ? 1 : -1;
+  ctx.beginPath();
+  ctx.arc(hingeS.x, hingeS.y, r,
+    wallAngle, wallAngle + swingDir*Math.PI/2, o.swing !== 'left');
+  ctx.setLineDash([3,3]);
+  ctx.strokeStyle = 'rgba(122,154,184,0.5)';
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+// Draw a window in plan view (three-line symbol)
+function drawWindow(o, wall) {
+  const dx = wall.x2-wall.x1, dy = wall.y2-wall.y1;
+  const len = Math.hypot(dx,dy); if(len<1e-6) return;
+  const ux=dx/len, uy=dy/len;
+  const nx=-uy, ny=ux;
+  const thick = wall.thickness * 0.45;
+
+  const cx = wall.x1 + o.pos*dx;
+  const cy = wall.y1 + o.pos*dy;
+  const hw = o.width/2;
+
+  const p1 = { x: cx - hw*ux, y: cy - hw*uy };
+  const p2 = { x: cx + hw*ux, y: cy + hw*uy };
+  // Offset lines for window depth
+  const o1a = { x: p1.x + nx*thick, y: p1.y + ny*thick };
+  const o2a = { x: p2.x + nx*thick, y: p2.y + ny*thick };
+  const o1b = { x: p1.x - nx*thick, y: p1.y - ny*thick };
+  const o2b = { x: p2.x - nx*thick, y: p2.y - ny*thick };
+
+  ctx.save();
+  ctx.strokeStyle = '#96c3e1';
+  ctx.lineWidth   = 1.2;
+
+  [[p1,p2],[o1a,o2a],[o1b,o2b]].forEach(([a,b]) => {
+    const sa = worldToScreen(a.x,a.y), sb = worldToScreen(b.x,b.y);
+    ctx.beginPath(); ctx.moveTo(sa.x,sa.y); ctx.lineTo(sb.x,sb.y); ctx.stroke();
+  });
+  ctx.restore();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// MEP
+// ════════════════════════════════════════════════════════════════════════════
+
+let activeDoorType = 'single';
+let activeWinType  = 'single-hung';
+let mepRunState    = { active:false, x1:0, y1:0 };
+
+function setMEPLayer(layer) {
+  activeMEPLayer = layer;
+  document.querySelectorAll('.mep-pill').forEach(b => {
+    b.classList.toggle('active', b.dataset.ml === layer);
+  });
+  showToast('MEP layer: ' + MEP_LAYERS[layer].label);
+}
+
+function drawMEPRun(m) {
+  const ml = MEP_LAYERS[m.layer];
+  const a = worldToScreen(m.x1, m.y1), b = worldToScreen(m.x2, m.y2);
+  ctx.save();
+  ctx.strokeStyle = ml.color;
+  ctx.lineWidth   = ml.lineW;
+  ctx.setLineDash(ml.dash);
+  ctx.lineCap     = 'round';
+  ctx.globalAlpha = 0.85;
+  ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Arrow at end indicating flow direction (plumbing/mech)
+  if (m.layer !== 'elec') {
+    const angle = Math.atan2(b.y-a.y, b.x-a.x);
+    const aLen  = 8;
+    ctx.beginPath();
+    ctx.moveTo(b.x, b.y);
+    ctx.lineTo(b.x - aLen*Math.cos(angle-0.4), b.y - aLen*Math.sin(angle-0.4));
+    ctx.moveTo(b.x, b.y);
+    ctx.lineTo(b.x - aLen*Math.cos(angle+0.4), b.y - aLen*Math.sin(angle+0.4));
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawMEPSymbol(m) {
+  const ml = MEP_LAYERS[m.layer];
+  const p  = worldToScreen(m.x1, m.y1);
+  const r  = 10;
+  ctx.save();
+  ctx.strokeStyle = ml.color;
+  ctx.fillStyle   = 'rgba(' + (m.layer==='elec'?'240,192,0':'m.layer==="plumb"?0,160,216:224,80,16') + ',0.12)';
+  ctx.lineWidth   = 1.2;
+  ctx.globalAlpha = 0.9;
+
+  switch(m.symbol) {
+    case 'outlet':
+      ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2); ctx.stroke();
+      ctx.fillStyle = ml.color;
+      ctx.font = 'bold 9px Fira Code,monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('⊕',p.x,p.y);
+      break;
+    case 'switch':
+      ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2); ctx.stroke();
+      ctx.font = 'bold 9px Fira Code,monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle = ml.color; ctx.fillText('S',p.x,p.y);
+      break;
+    case 'panel':
+      ctx.strokeRect(p.x-r,p.y-r,r*2,r*2);
+      ctx.font = '7px Fira Code,monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle = ml.color; ctx.fillText('PNL',p.x,p.y);
+      break;
+    case 'light-ceil':
+      ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(p.x-r,p.y); ctx.lineTo(p.x+r,p.y);
+      ctx.moveTo(p.x,p.y-r); ctx.lineTo(p.x,p.y+r);
+      ctx.stroke();
+      break;
+    case 'toilet':
+      ctx.beginPath(); ctx.ellipse(p.x,p.y,r*0.8,r,0,0,Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(p.x,p.y+r*0.5,r*0.4,0,Math.PI*2); ctx.stroke();
+      break;
+    case 'sink':
+      ctx.strokeRect(p.x-r*0.9,p.y-r*0.7,r*1.8,r*1.4);
+      ctx.beginPath(); ctx.arc(p.x,p.y,r*0.3,0,Math.PI*2); ctx.stroke();
+      break;
+    case 'diffuser':
+      ctx.strokeRect(p.x-r,p.y-r,r*2,r*2);
+      ctx.beginPath();
+      ctx.moveTo(p.x-r,p.y-r); ctx.lineTo(p.x+r,p.y+r);
+      ctx.moveTo(p.x+r,p.y-r); ctx.lineTo(p.x-r,p.y+r);
+      ctx.stroke();
+      break;
+    case 'thermostat':
+      ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2); ctx.stroke();
+      ctx.font = '7px Fira Code,monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle = ml.color; ctx.fillText('T',p.x,p.y);
+      break;
+    default:
+      ctx.beginPath(); ctx.arc(p.x,p.y,r*0.6,0,Math.PI*2); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// MEP rubber-band preview
+function drawMEPRubber() {
+  if (activeTool!=='mep-run' || !mepRunState.active) return;
+  const ml = MEP_LAYERS[activeMEPLayer];
+  const a  = worldToScreen(mepRunState.x1, mepRunState.y1);
+  const b  = worldToScreen(mouseWorld.x, mouseWorld.y);
+  ctx.save();
+  ctx.strokeStyle = ml.color;
+  ctx.lineWidth   = ml.lineW;
+  ctx.setLineDash([4,3]);
+  ctx.globalAlpha = 0.6;
+  ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+// ── MEP visibility toggles ───────────────────────────────────────────────
+function toggleMEPLayer(layer) {
+  MEP_LAYERS[layer].active = !MEP_LAYERS[layer].active;
+  render();
+  showToast(MEP_LAYERS[layer].label + ': ' + (MEP_LAYERS[layer].active ? 'ON' : 'OFF'));
+}
+
+// ── Symbol picker dialog ──────────────────────────────────────────────────
+function openSymbolPicker(wx, wy) {
+  const ml  = MEP_LAYERS[activeMEPLayer];
+  const syms = MEP_SYMBOLS[activeMEPLayer];
+  // Remove existing picker
+  const old = document.getElementById('sym-picker');
+  if (old) old.remove();
+  const sp  = worldToScreen(wx, wy);
+  const div = document.createElement('div');
+  div.id    = 'sym-picker';
+  div.style.cssText = `position:fixed;left:${Math.min(sp.x,window.innerWidth-180)}px;top:${Math.min(sp.y,window.innerHeight-220)}px;
+    background:#0c0f18;border:1px solid ${ml.color};border-radius:6px;
+    padding:8px;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,0.7);
+    font-family:Fira Code,monospace;font-size:10px;min-width:160px;`;
+  div.innerHTML = `<div style="color:${ml.color};font-size:9px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">${ml.label} Symbol</div>` +
+    syms.map(s => `<div onclick="placeMEPSymbol(${wx},${wy},'${s}')" 
+      style="padding:4px 8px;cursor:pointer;color:#7090a8;border-radius:3px;text-transform:uppercase;letter-spacing:0.06em;"
+      onmouseover="this.style.background='rgba(255,255,255,0.06)'"
+      onmouseout="this.style.background=''">${s.replace(/-/g,' ')}</div>`).join('') +
+    `<div onclick="document.getElementById('sym-picker').remove()" 
+      style="margin-top:6px;padding:3px 8px;cursor:pointer;color:#3a5070;font-size:9px;">cancel</div>`;
+  document.body.appendChild(div);
+  document.addEventListener('keydown', function esc(e){
+    if(e.key==='Escape'){ div.remove(); document.removeEventListener('keydown',esc); }
+  });
+}
+
+function placeMEPSymbol(wx, wy, symbol) {
+  Scene.addMEP({ layer:activeMEPLayer, kind:'symbol', symbol, x1:wx, y1:wy, x2:wx, y2:wy });
+  const old = document.getElementById('sym-picker'); if(old) old.remove();
+  render();
+  showToast(symbol.replace(/-/g,' ') + ' placed');
+}
+
+// ── Door/window type dialog ───────────────────────────────────────────────
+function openDoorDialog(wx, wy) {
+  const old = document.getElementById('door-picker'); if(old) old.remove();
+  const sp  = worldToScreen(wx, wy);
+  const div = document.createElement('div');
+  div.id = 'door-picker';
+  div.style.cssText = `position:fixed;left:${Math.min(sp.x,window.innerWidth-180)}px;top:${Math.min(sp.y,window.innerHeight-240)}px;
+    background:#0c0f18;border:1px solid #7a9ab8;border-radius:6px;
+    padding:8px;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,0.7);
+    font-family:Fira Code,monospace;font-size:10px;min-width:160px;`;
+  const isDoor = activeTool==='door';
+  const types  = isDoor ? DOOR_TYPES : WIN_TYPES;
+  div.innerHTML = `<div style="color:#7a9ab8;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">${isDoor?'Door':'Window'} Type</div>` +
+    Object.entries(types).map(([k,v]) => `<div onclick="${isDoor?'activeDoorType':'activeWinType'}='${k}';document.getElementById('${isDoor?'door':'door'}-picker').remove();placeOpening(${wx},${wy},'${isDoor?'door':'window'}')"
+      style="padding:4px 8px;cursor:pointer;color:${isDoor&&k===activeDoorType||!isDoor&&k===activeWinType?'#b8c8d8':'#506070'};border-radius:3px;"
+      onmouseover="this.style.background='rgba(255,255,255,0.06)'"
+      onmouseout="this.style.background=''">${v.label} (${(v.defaultW*1000).toFixed(0)}mm)</div>`).join('') +
+    `<div onclick="document.getElementById('door-picker').remove()" 
+      style="margin-top:6px;padding:3px 8px;cursor:pointer;color:#3a5070;font-size:9px;">cancel</div>`;
+  document.body.appendChild(div);
 }
 
 // ── Main render ─────────────────────────────────────────────────────────────
@@ -735,6 +1171,20 @@ function render() {
   for (const wall of Scene.walls) {
     drawWall(wall, selectedId===wall.id);
   }
+  // Draw openings (doors and windows) over walls
+  for (const o of Scene.openings) {
+    const wall = Scene.byId ? Scene.walls.find(w=>w.id===o.wallId) : null;
+    if (!wall) continue;
+    if (o.kind==='door')   drawDoor(o, wall);
+    if (o.kind==='window') drawWindow(o, wall);
+  }
+  // Draw MEP runs and symbols
+  for (const m of Scene.mep) {
+    if (!MEP_LAYERS[m.layer].active) continue;
+    if (m.kind==='run')    drawMEPRun(m);
+    if (m.kind==='symbol') drawMEPSymbol(m);
+  }
+  drawMEPRubber();
   drawRubberBandWall();
 }
 
@@ -752,6 +1202,15 @@ let shiftLockAngle = 0;
 
 function setTool(t) {
   activeTool=t;
+  // Show MEP toolbar only for MEP tools
+  const mepBar = document.getElementById('tb-mep-bar');
+  if (mepBar) mepBar.style.display = (t==='mep-run'||t==='mep-sym') ? 'flex' : 'none';
+  // Reset in-progress states
+  if (t!=='mep-run') mepRunState = { active:false };
+  // Highlight sidebar button
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  const tbtn = document.getElementById('tool-'+t);
+  if (tbtn) tbtn.classList.add('active');
   if (t!=='wall') { wallState.active=false; }
   if (t!=='select') { selectedId=null; updateRightPanel(); }
   document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
@@ -795,6 +1254,8 @@ function spt(e) {
 }
 
 function onMouseMove(e) {
+  const _msp = spt(e);
+  mouseWorld = screenToWorld(_msp.x, _msp.y);
   const s=spt(e);
   mouseScreen=s;
   const raw=screenToWorld(s.x,s.y);
@@ -852,6 +1313,35 @@ function onMouseDown(e) {
   e.preventDefault();
   const wp=mouseWorld; // already snapped + shift-locked
 
+  // Door placement
+  if (activeTool==='door') {
+    openDoorDialog(wp.x, wp.y);
+    return;
+  }
+  // Window placement
+  if (activeTool==='window') {
+    openDoorDialog(wp.x, wp.y);
+    return;
+  }
+  // MEP run — two click
+  if (activeTool==='mep-run') {
+    if (!mepRunState.active) {
+      mepRunState = { active:true, x1:wp.x, y1:wp.y };
+      showToast('MEP run start set — click second point');
+    } else {
+      Scene.addMEP({ layer:activeMEPLayer, kind:'run', symbol:'run',
+        x1:mepRunState.x1, y1:mepRunState.y1, x2:wp.x, y2:wp.y });
+      mepRunState = { active:false };
+      render();
+      showToast(MEP_LAYERS[activeMEPLayer].label + ' run placed');
+    }
+    return;
+  }
+  // MEP symbol picker
+  if (activeTool==='mep-sym') {
+    openSymbolPicker(wp.x, wp.y);
+    return;
+  }
   if (activeTool==='wall') {
     if (!wallState.active) {
       // Start new wall
@@ -912,8 +1402,12 @@ function onContextMenu(e) {
 document.addEventListener('keydown', e=>{
   if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
   switch(e.key) {
-    case 'w': case 'W': setTool('wall');   break;
+    case 'w': case 'W': setTool('wall');    break;
     case 'v': case 'V': setTool('select'); break;
+    case 'd': case 'D': setTool('door');   break;
+    case 'i': case 'I': setTool('window'); break;
+    case 'm': case 'M': setTool('mep-run');break;
+    case 'y': case 'Y': setTool('mep-sym');break;
     case 'Escape':
       if (wallState.active) { wallState.active=false; render(); }
       else { selectedId=null; updateRightPanel(); render(); }
@@ -983,7 +1477,7 @@ function newDoc() {
 }
 
 function saveDoc() {
-  const doc={version:'0.0',source:'KONSTRUCT',walls:Scene.walls,nextId:Scene.nextId};
+  const doc={version:'0.0',source:'KONSTRUCT',walls:Scene.walls,openings:Scene.openings,mep:Scene.mep,nextId:Scene.nextId};
   const blob=new Blob([JSON.stringify(doc,null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob); a.download='structure.kst'; a.click();
@@ -999,6 +1493,8 @@ function loadDoc(e) {
       const d=JSON.parse(ev.target.result);
       if (d.source!=='KONSTRUCT'||!d.walls) throw 0;
       Scene.walls=d.walls; Scene.nextId=d.nextId||d.walls.length+1;
+    Scene.openings = d.openings || [];
+    Scene.mep      = d.mep      || [];
       selectedId=null; wallState.active=false;
       document.getElementById('sb-count').textContent=Scene.walls.length;
       updateRightPanel(); render();
